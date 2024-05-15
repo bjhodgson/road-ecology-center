@@ -2,7 +2,8 @@ import csv
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
-csv_file = "dem_contours_GeneratePointsAlongLines_30m_TableToExcel.csv"
+csv_file_name = "dem_contours_GeneratePointsAlongLines_30m_TableToExcel.csv"
+csv_file = csv_file_name
 
 # Read CSV data and organize it by terrain lines
 def read_csv(csv_file):
