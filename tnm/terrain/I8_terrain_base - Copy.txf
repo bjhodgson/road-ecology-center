@@ -24,7 +24,7 @@
   <coordinateSystem>WGS1984</coordinateSystem>
   <trafficEntryType>LEqualHourly</trafficEntryType>
   <relHumid>50</relHumid>
-  <temperature>25</temperature>
+  <temperature>68</temperature>
   <groundType>HardSoil</groundType>
   <subSourceHeightDistLimit>500</subSourceHeightDistLimit>
   <UDV>
