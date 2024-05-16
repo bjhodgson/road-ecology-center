@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <project xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <savedBy>TNM v3.2.8741.34338</savedBy>
-  <lastModifiedOn>2024-05-15T21:22:13.9650207-07:00</lastModifiedOn>
+  <lastModifiedOn>2024-05-15T21:44:00.8916502-07:00</lastModifiedOn>
   <AcousticsModel />
   <organization />
   <SerializationVersion>2</SerializationVersion>
@@ -79,7 +79,7 @@
           <theX>-116.0260526</theX>
           <theY>32.72700177</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -241,10 +241,10 @@
         <point>
           <name>269</name>
           <pointNumber>341</pointNumber>
-          <theX>-116.0244061</theX>
-          <theY>32.72741813</theY>
+          <theX>-116.02444544434567</theX>
+          <theY>32.727442082100048</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -404,12 +404,12 @@
           </myTraffic>
         </point>
         <point>
-          <name>Point-338</name>
-          <pointNumber>343</pointNumber>
-          <theX>-116.02356970310227</theX>
-          <theY>32.727616908848432</theY>
+          <name>Point-1</name>
+          <pointNumber>5</pointNumber>
+          <theX>-116.02370649576207</theX>
+          <theY>32.727630447302</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -570,11 +570,11 @@
         </point>
         <point>
           <name>287</name>
-          <pointNumber>0</pointNumber>
-          <theX>-116.0227107</theX>
-          <theY>32.72768657</theY>
+          <pointNumber>344</pointNumber>
+          <theX>-116.02275699377077</theX>
+          <theY>32.727707165166677</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -734,12 +734,12 @@
           </myTraffic>
         </point>
         <point>
-          <name>Point-0</name>
-          <pointNumber>4</pointNumber>
-          <theX>-116.02196037769338</theX>
-          <theY>32.727601113983347</theY>
+          <name>Point-2</name>
+          <pointNumber>6</pointNumber>
+          <theX>-116.02187991142296</theX>
+          <theY>32.7276191652575</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -904,7 +904,7 @@
           <theX>-116.0210325</theX>
           <theY>32.7273736</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -1065,11 +1065,11 @@
         </point>
         <point>
           <name>282</name>
-          <pointNumber>327</pointNumber>
+          <pointNumber>0</pointNumber>
           <theX>-116.0194025</theX>
           <theY>32.72694989</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -1230,176 +1230,11 @@
         </point>
         <point>
           <name>265</name>
-          <pointNumber>328</pointNumber>
+          <pointNumber>4</pointNumber>
           <theX>-116.0177643</theX>
           <theY>32.72662572</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
-          <onStructure>false</onStructure>
-          <roadType>Average</roadType>
-          <roadCategory>Mainline</roadCategory>
-          <speedConstraint>0</speedConstraint>
-          <controlDevice>None</controlDevice>
-          <percentAffected>100</percentAffected>
-          <myTraffic>
-            <LEQ_P_ADT>0</LEQ_P_ADT>
-            <LDN_ADT>0</LDN_ADT>
-            <CNEL_ADT>0</CNEL_ADT>
-            <DayPercentVolume>0</DayPercentVolume>
-            <EvePercentVolume>0</EvePercentVolume>
-            <NightPercentVolume>0</NightPercentVolume>
-            <vehicleFlowSet>
-              <vehicleFlow>
-                <vehicleType>Automobiles</vehicleType>
-                <leqVHourlyVolume>1600</leqVHourlyVolume>
-                <leqVAverageSpeed>105</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>MediumTrucks</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>HeavyTrucks</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Bus</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Motorcycle</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Other1</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Other2</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Other3</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Other4</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Other5</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-            </vehicleFlowSet>
-            <TrafficEntryType>LEqualHourly</TrafficEntryType>
-          </myTraffic>
-        </point>
-        <point>
-          <name>291</name>
-          <pointNumber>329</pointNumber>
-          <theX>-116.01748175919074</theX>
-          <theY>32.72660440720837</theY>
-          <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -1564,7 +1399,7 @@
           <theX>-116.0173949</theX>
           <theY>32.72660018</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -1729,7 +1564,7 @@
           <theX>-116.0161435</theX>
           <theY>32.72651362</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -1894,7 +1729,7 @@
           <theX>-116.0139099</theX>
           <theY>32.72634279</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -2059,172 +1894,7 @@
           <theX>-116.0119475</theX>
           <theY>32.72619598</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
-          <onStructure>false</onStructure>
-          <roadType>Average</roadType>
-          <roadCategory>Mainline</roadCategory>
-          <speedConstraint>0</speedConstraint>
-          <controlDevice>None</controlDevice>
-          <percentAffected>100</percentAffected>
-          <myTraffic>
-            <LEQ_P_ADT>0</LEQ_P_ADT>
-            <LDN_ADT>0</LDN_ADT>
-            <CNEL_ADT>0</CNEL_ADT>
-            <DayPercentVolume>0</DayPercentVolume>
-            <EvePercentVolume>0</EvePercentVolume>
-            <NightPercentVolume>0</NightPercentVolume>
-            <vehicleFlowSet>
-              <vehicleFlow>
-                <vehicleType>Automobiles</vehicleType>
-                <leqVHourlyVolume>1600</leqVHourlyVolume>
-                <leqVAverageSpeed>105</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>MediumTrucks</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>HeavyTrucks</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Bus</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Motorcycle</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Other1</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Other2</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Other3</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Other4</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Other5</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-            </vehicleFlowSet>
-            <TrafficEntryType>LEqualHourly</TrafficEntryType>
-          </myTraffic>
-        </point>
-        <point>
-          <name>272</name>
-          <pointNumber>334</pointNumber>
-          <theX>-116.0101912</theX>
-          <theY>32.72606765</theY>
-          <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -2389,7 +2059,7 @@
           <theX>-116.0085003</theX>
           <theY>32.72594187</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -2554,7 +2224,7 @@
           <theX>-116.0069506</theX>
           <theY>32.72582144</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -2719,7 +2389,7 @@
           <theX>-116.0054006</theX>
           <theY>32.72570192</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -2884,7 +2554,7 @@
           <theX>-116.0038492</theX>
           <theY>32.7255894</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -3049,7 +2719,7 @@
           <theX>-116.0022979</theX>
           <theY>32.72547598</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -3214,7 +2884,7 @@
           <theX>-116.0007478</theX>
           <theY>32.72535722</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -3375,11 +3045,11 @@
         </point>
         <point>
           <name>293</name>
-          <pointNumber>341</pointNumber>
+          <pointNumber>1</pointNumber>
           <theX>-115.9991976</theX>
           <theY>32.72523845</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -3540,176 +3210,11 @@
         </point>
         <point>
           <name>273</name>
-          <pointNumber>3</pointNumber>
+          <pointNumber>342</pointNumber>
           <theX>-115.9976475</theX>
           <theY>32.72511968</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
-          <onStructure>false</onStructure>
-          <roadType>Average</roadType>
-          <roadCategory>Mainline</roadCategory>
-          <speedConstraint>0</speedConstraint>
-          <controlDevice>None</controlDevice>
-          <percentAffected>100</percentAffected>
-          <myTraffic>
-            <LEQ_P_ADT>0</LEQ_P_ADT>
-            <LDN_ADT>0</LDN_ADT>
-            <CNEL_ADT>0</CNEL_ADT>
-            <DayPercentVolume>0</DayPercentVolume>
-            <EvePercentVolume>0</EvePercentVolume>
-            <NightPercentVolume>0</NightPercentVolume>
-            <vehicleFlowSet>
-              <vehicleFlow>
-                <vehicleType>Automobiles</vehicleType>
-                <leqVHourlyVolume>1600</leqVHourlyVolume>
-                <leqVAverageSpeed>105</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>MediumTrucks</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>HeavyTrucks</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Bus</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Motorcycle</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Other1</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Other2</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Other3</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Other4</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-              <vehicleFlow>
-                <vehicleType>Other5</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
-                <leqPPercent>0</leqPPercent>
-                <leqPAverageSpeed>0</leqPAverageSpeed>
-                <ldnPercentDay>0</ldnPercentDay>
-                <ldnPercentNight>0</ldnPercentNight>
-                <ldnAverageSpeed>0</ldnAverageSpeed>
-                <cnelPercentDay>0</cnelPercentDay>
-                <cnelPercentEve>0</cnelPercentEve>
-                <cnelPercentNight>0</cnelPercentNight>
-                <cnelAverageSpeed>0</cnelAverageSpeed>
-              </vehicleFlow>
-            </vehicleFlowSet>
-            <TrafficEntryType>LEqualHourly</TrafficEntryType>
-          </myTraffic>
-        </point>
-        <point>
-          <name>276</name>
-          <pointNumber>343</pointNumber>
-          <theX>-115.9960959</theX>
-          <theY>32.72501301</theY>
-          <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -3870,11 +3375,11 @@
         </point>
         <point>
           <name>262</name>
-          <pointNumber>4</pointNumber>
+          <pointNumber>3</pointNumber>
           <theX>-115.9960668</theX>
           <theY>32.72501104</theY>
           <theZ>200</theZ>
-          <roadwayWidth>10</roadwayWidth>
+          <roadwayWidth>5</roadwayWidth>
           <onStructure>false</onStructure>
           <roadType>Average</roadType>
           <roadCategory>Mainline</roadCategory>
@@ -3891,8 +3396,8 @@
             <vehicleFlowSet>
               <vehicleFlow>
                 <vehicleType>Automobiles</vehicleType>
-                <leqVHourlyVolume>0</leqVHourlyVolume>
-                <leqVAverageSpeed>0</leqVAverageSpeed>
+                <leqVHourlyVolume>1600</leqVHourlyVolume>
+                <leqVAverageSpeed>105</leqVAverageSpeed>
                 <leqPPercent>0</leqPPercent>
                 <leqPAverageSpeed>0</leqPAverageSpeed>
                 <ldnPercentDay>0</ldnPercentDay>
@@ -6508,8 +6013,8 @@
           <name>Point-276</name>
           <pointNumber>273</pointNumber>
           <OrderingNumber>273</OrderingNumber>
-          <theX>-116.0146845</theX>
-          <theY>32.72635682</theY>
+          <theX>-116.01468086242693</theX>
+          <theY>32.726340945500695</theY>
           <theZ>0</theZ>
           <comments>Point Notes</comments>
         </point>
