@@ -5,7 +5,7 @@
   <AcousticsModel />
   <organization />
   <SerializationVersion>2</SerializationVersion>
-  <runTitle>I8_terrain_WGS84</runTitle>
+  <runTitle>I8_terrain_base</runTitle>
   <StatePlaneAdjustment>
     <IsEnabled>false</IsEnabled>
     <MaintainAspectRatio>true</MaintainAspectRatio>
