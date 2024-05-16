@@ -5,22 +5,23 @@ import xml.dom.minidom
 csv_file_name = "R98_S_CZoneBufferR1km_Erase_points20m.csv"
 csv_file = csv_file_name
 
-# Read CSV data and organize it by terrain lines
+# Read CSV data and organize it by contour zones
 def read_csv(csv_file):
     contour_zones = {}
     with open(csv_file, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
+        
         for row in reader:
-            contour_zone_id = row['ORIG_FID']
+            contour_zone_id = row['ORIG_FID']  # Use 'ORIG_FID' as the contour zone identifier
             if contour_zone_id not in contour_zones:
                 contour_zones[contour_zone_id] = {'name': 'Contour Zone-' + contour_zone_id, 'points': []}
             point_data = {
-                'name': 'Point-' + row['OBJECTID'],
+                'name': 'Point-' + row['OBJECTID'],  # Ensure 'OBJECTID' is the correct column name
                 'pointNumber': row['OBJECTID'],
                 'OrderingNumber': row['OBJECTID'],
-                'theX': row['Longitude'],
-                'theY': row['Latitude'],
-                #'theZ': row['Z']  # Assuming theZ is always 0 in your CSV data
+                'theX': row['Longitude'],  # Ensure 'Longitude' is the correct column name
+                'theY': row['Latitude'],  # Ensure 'Latitude' is the correct column name
+                'theZ': '0'  # Assuming theZ is always 0 in your CSV data
             }
             contour_zones[contour_zone_id]['points'].append(point_data)
     return contour_zones
@@ -28,15 +29,21 @@ def read_csv(csv_file):
 # Create XML structure
 def create_xml_structure(contour_zones_data):
     root_element = ET.Element("root")
-    contour_zones_element = ET.SubElement(root_element, "terrainLines")
+    contour_zones_element = ET.SubElement(root_element, "contourZones")
     
     for contour_zone_data in contour_zones_data.values():
-        contour_zone_element = ET.SubElement(contour_zones_element, "terrainLine")
+        contour_zone_element = ET.SubElement(contour_zones_element, "contourZone")
         name_element = ET.SubElement(contour_zone_element, "name")
         name_element.text = contour_zone_data['name']
         
-        comments_element = ET.SubElement(contour_zone_element, "comments")
-        comments_element.text = "Object Notes"  # Add your object notes here
+        spacing_element = ET.SubElement(contour_zone_element, "spacing")
+        spacing_element.text = "60"  # Add your spacing value here
+        
+        precision_element = ET.SubElement(contour_zone_element, "precision")
+        precision_element.text = "1"  # Add your precision value here
+        
+        receiver_height_element = ET.SubElement(contour_zone_element, "receiverHeight")
+        receiver_height_element.text = "1.5"  # Add your receiver height value here
         
         points_element = ET.SubElement(contour_zone_element, "points")
         
@@ -61,7 +68,7 @@ def csv_to_xml(csv_file, xml_file):
         xmlfile.write(xml_pretty_string)
 
 # Specify output file path
-xml_file_path = r'D:\Documents\road-ecology-center\tnm\terrain\contourzone_data.xml'
+xml_file_path = r'D:\Documents\road-ecology-center\tnm\terrain\contour_data.xml'
 
 # Convert CSV to XML
 csv_to_xml(csv_file, xml_file_path)
