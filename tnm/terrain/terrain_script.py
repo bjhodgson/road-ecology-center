@@ -61,7 +61,7 @@ def csv_to_xml(csv_file, xml_file):
         xmlfile.write(xml_pretty_string)
 
 # Specify output file path
-xml_file_path = r'C:\Users\HP\Documents\GitHub\road-ecology-center\tnm\terrain\terrain_data.xml'
+xml_file_path = r'D:\Documents\road-ecology-center\tnm\terrain\terrain_data.xml'
 
 # Convert CSV to XML
 csv_to_xml(csv_file, xml_file_path)
