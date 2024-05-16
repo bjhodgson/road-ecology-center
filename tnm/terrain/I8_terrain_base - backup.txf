@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <savedBy>TNM v3.2.8741.34338</savedBy>
+  <lastModifiedOn>2024-05-09T19:29:40.1946062-07:00</lastModifiedOn>
+  <AcousticsModel />
+  <organization />
+  <SerializationVersion>2</SerializationVersion>
+  <runTitle>I8_terrain_base</runTitle>
+  <StatePlaneAdjustment>
+    <IsEnabled>false</IsEnabled>
+    <MaintainAspectRatio>true</MaintainAspectRatio>
+    <StatePlaneAdjustmentType>Scale</StatePlaneAdjustmentType>
+    <X>0</X>
+    <Y>0</Y>
+  </StatePlaneAdjustment>
+  <projectContract />
+  <analysisBy>HP</analysisBy>
+  <analysisPeriod>12</analysisPeriod>
+  <CalculatedMetric>LAeq</CalculatedMetric>
+  <description />
+  <unitOfMeasure>English</unitOfMeasure>
+  <coordinateSystemType>Geographic</coordinateSystemType>
+  <coordinateSystemCategory>World</coordinateSystemCategory>
+  <coordinateSystem>WGS1984</coordinateSystem>
+  <trafficEntryType>LEqualHourly</trafficEntryType>
+  <relHumid>50</relHumid>
+  <temperature>68</temperature>
+  <groundType>HardSoil</groundType>
+  <subSourceHeightDistLimit>500</subSourceHeightDistLimit>
+  <UDV>
+    <vehicle>
+      <name>User1</name>
+      <vehType>Other1</vehType>
+      <similarType>Other1</similarType>
+      <minLevel>0</minLevel>
+      <referenceLevel>0</referenceLevel>
+      <logSlope>0</logSlope>
+    </vehicle>
+    <vehicle>
+      <name>User2</name>
+      <vehType>Other2</vehType>
+      <similarType>Other2</similarType>
+      <minLevel>0</minLevel>
+      <referenceLevel>0</referenceLevel>
+      <logSlope>0</logSlope>
+    </vehicle>
+    <vehicle>
+      <name>User3</name>
+      <vehType>Other3</vehType>
+      <similarType>Other3</similarType>
+      <minLevel>0</minLevel>
+      <referenceLevel>0</referenceLevel>
+      <logSlope>0</logSlope>
+    </vehicle>
+    <vehicle>
+      <name>User4</name>
+      <vehType>Other4</vehType>
+      <similarType>Other4</similarType>
+      <minLevel>0</minLevel>
+      <referenceLevel>0</referenceLevel>
+      <logSlope>0</logSlope>
+    </vehicle>
+    <vehicle>
+      <name>User5</name>
+      <vehType>Other5</vehType>
+      <similarType>Other5</similarType>
+      <minLevel>0</minLevel>
+      <referenceLevel>0</referenceLevel>
+      <logSlope>0</logSlope>
+    </vehicle>
+  </UDV>
+  <roadways />
+  <EquipmentCollection />
+  <receivers />
+  <groundZones />
+  <treeZones />
+  <contourZones />
+  <terrainLines>
+    <terrainLine>
+      <name>Terrain Line-1</name>
+      <comments>Object Notes</comments>
+      <points>
+        <point>
+          <name>Point-1</name>
+          <pointNumber>1</pointNumber>
+          <OrderingNumber>1</OrderingNumber>
+          <theX>-115.9945426</theX>
+          <theY>32.7325089</theY>
+          <theZ>0</theZ>
+          <comments>Point Notes</comments>
+        </point>
+      </points>
+    </terrainLine>
+  </terrainLines>
+  <buildingRows />
+  <barriers />
+  <barrierDesigns />
+  <defaults>
+    <receiverDefaults>
+      <name>Receiver</name>
+      <heightAboveTerrain>5</heightAboveTerrain>
+      <dwellingUnits>1</dwellingUnits>
+      <defaultAdjustment>0</defaultAdjustment>
+      <noiseReductionGoal>8</noiseReductionGoal>
+      <existingLEQ>0</existingLEQ>
+      <impactLEQ>0</impactLEQ>
+      <impactIncrease>10</impactIncrease>
+      <inactive>false</inactive>
+    </receiverDefaults>
+    <barrierDefaults>
+      <name>Barrier</name>
+      <barrierType>Wall</barrierType>
+      <segPertResolution>0</segPertResolution>
+      <segUpIncrements>0</segUpIncrements>
+      <segDownIncrements>0</segDownIncrements>
+      <segTopWidth>0</segTopWidth>
+      <segSideSlopeRun>2</segSideSlopeRun>
+      <segSideSlopeRise>1</segSideSlopeRise>
+      <segNRCLSide>0</segNRCLSide>
+      <segNRCRSide>0</segNRCRSide>
+      <segNRCPBA>0</segNRCPBA>
+      <costPerUnitArea>0</costPerUnitArea>
+      <costPerUnitVolume>0</costPerUnitVolume>
+      <addedCostPerUnitLength>0</addedCostPerUnitLength>
+      <maxHeight>300</maxHeight>
+      <minHeight>0</minHeight>
+      <baseHeight>10</baseHeight>
+      <segmentForNoiseAbatement>true</segmentForNoiseAbatement>
+    </barrierDefaults>
+    <roadwayDefaults>
+      <name>Roadway</name>
+      <roadwayWidth>12</roadwayWidth>
+      <onStructure>false</onStructure>
+      <roadType>Average</roadType>
+      <roadCategory>Mainline</roadCategory>
+      <multiLaneEnabled>false</multiLaneEnabled>
+      <insideShoulder>false</insideShoulder>
+      <insideShoulderWidth>4</insideShoulderWidth>
+      <numberOfLanes>2</numberOfLanes>
+      <outsideShoulder>false</outsideShoulder>
+      <outsideShoulderWidth>4</outsideShoulderWidth>
+    </roadwayDefaults>
+    <terrainLineDefaults>
+      <name>Terrain Line</name>
+    </terrainLineDefaults>
+    <buildingRowDefaults>
+      <name>Building Row</name>
+      <averageHeight>20</averageHeight>
+      <gapPercentage>80</gapPercentage>
+    </buildingRowDefaults>
+    <groundZoneDefaults>
+      <name>Ground Zone</name>
+      <groundType>Pavement</groundType>
+      <flowResistivity>20000</flowResistivity>
+    </groundZoneDefaults>
+    <treeZoneDefaults>
+      <name>Tree Zone</name>
+      <groundType>FieldGrass</groundType>
+      <flowResistivity>150</flowResistivity>
+      <averageHeight>10</averageHeight>
+    </treeZoneDefaults>
+    <contourZoneDefaults>
+      <name>Contour Zone</name>
+      <spacing>200</spacing>
+      <precision>1</precision>
+      <receiverHeight>5</receiverHeight>
+    </contourZoneDefaults>
+  </defaults>
+  <Bookmarks />
+</project>
