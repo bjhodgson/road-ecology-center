@@ -2,7 +2,7 @@ import csv
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
-csv_file_name = "dem_contours_GeneratePointsAlongLines_30m_TableToExcel.csv"
+csv_file_name = "R98_S_contours_points10m.csv"
 csv_file = csv_file_name
 
 # Read CSV data and organize it by terrain lines
@@ -11,7 +11,7 @@ def read_csv(csv_file):
     with open(csv_file, newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            terrain_line_id = row['Id']
+            terrain_line_id = row['ORIG_FID']
             if terrain_line_id not in terrain_lines:
                 terrain_lines[terrain_line_id] = {'name': 'Terrain Line-' + terrain_line_id, 'points': []}
             point_data = {
@@ -20,7 +20,7 @@ def read_csv(csv_file):
                 'OrderingNumber': row['OBJECTID'],
                 'theX': row['Longitude'],
                 'theY': row['Latitude'],
-                'theZ': '0'  # Assuming theZ is always 0 in your CSV data
+                'theZ': row['Z']  # Assuming theZ is always 0 in your CSV data
             }
             terrain_lines[terrain_line_id]['points'].append(point_data)
     return terrain_lines
