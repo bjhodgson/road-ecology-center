@@ -2,7 +2,7 @@ import csv
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
-csv_file_name = "R98_S_contours_points10m.csv"
+csv_file_name = "R98_S_contours_points30m.csv"
 csv_file = csv_file_name
 
 # Read CSV data and organize it by terrain lines
