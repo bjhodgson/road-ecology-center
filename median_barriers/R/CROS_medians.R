@@ -1,47 +1,25 @@
 # Install and load necessary packages
-install.packages("readxl")
-install.packages("dplyr")
-install.packages("ggplot2")
+# install.packages("readxl")
+# install.packages("dplyr")
+# install.packages("ggplot2")
 library(readxl)
 library(dplyr)
 library(ggplot2)
 
-# Specify the path to your main directory
-main_directory <- "H:\\median_barriers\\CROS_medians_dataset"
-
-# For separated folders file structure
-# # List all subdirectories in the main directory
-# subdirectories <- list.dirs(path = main_directory, recursive = FALSE)
-# 
-# # Function to list Excel files in a given directory
-# list_excel_files <- function(directory) {
-#   list.files(path = directory, pattern = "*.xlsx", full.names = TRUE)
-# }
-# 
-# # Get a list of Excel files from each subdirectory
-# file_list <- unlist(lapply(subdirectories, list_excel_files))
-# 
-# # Filter the list to only include files with "CROS_medians" in the name
-# filtered_file_list <- grep("CROS_medians.*_TableToExcel\\.xlsx$", file_list, value = TRUE)
-# 
-# # Read each Excel file into a list of dataframes
-# df_list <- lapply(filtered_file_list, read_excel)
-
-
-# For one data folder files structure
-
-# Function to list xlsx files in a given directory
+# Function to list xlsx and xls files in a given directory
 list_excel_files <- function(directory) {
-   list.files(path = directory, pattern = "*.xlsx", full.names = TRUE)
+  xls_files <- list.files(path = directory, pattern = "*.xls", full.names = TRUE)
+  c(xls_files)
 }
 
-# Function to list Excel files in a given directory
-list_xls_files <- function(directory) {
-  list.files(path = directory, pattern = "*.xls", full.names = TRUE)
-}
+# Specify the path to your directory containing Excel files
+directory_path <- "D:\\Documents\\road-ecology-center\\median_barriers\\CROS_medians_dataset"
 
-# Get a list of Excel files from each subdirectory
-file_list <- unlist(lapply(main_directory, list_excel_files))
+# Get a list of Excel files from the directory
+file_list <- list_excel_files(directory_path)
+
+# Read each Excel file into a list of dataframes
+df_list <- lapply(file_list, read_excel)
 
 # Combine the dataframes into one dataframe
 combined_df <- bind_rows(df_list)
@@ -62,8 +40,11 @@ columns_to_remove <- c(
 # Remove the specified columns
 cleaned_df <- combined_df %>% select(-one_of(columns_to_remove))
 
+# Filter out NA values from the cleaned dataframe
+cleaned_df_filtered <- cleaned_df[!is.na(cleaned_df$New_ID_1), ]
+
 # Visualize histogram of hits per median type
-cleaned_df %>%
+cleaned_df_filtered %>%
   group_by(New_ID_1) %>%
   summarise(count = n()) %>%
   ggplot(aes(x = New_ID_1, y = count)) +
