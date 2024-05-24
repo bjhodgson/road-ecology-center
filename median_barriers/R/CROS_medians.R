@@ -1,8 +1,10 @@
 # Install and load necessary packages
 install.packages("readxl")
 install.packages("dplyr")
+install.packages("ggplot2")
 library(readxl)
 library(dplyr)
+library(ggplot2)
 
 # Specify the path to your main directory
 main_directory <- "H:\\median_barriers\\output_data"
@@ -42,3 +44,12 @@ columns_to_remove <- c(
 
 # Remove the specified columns
 cleaned_df <- combined_df %>% select(-one_of(columns_to_remove))
+
+# Visualize histogram of hits per median type
+cleaned_df %>%
+  group_by(New_ID_1) %>%
+  summarise(count = n()) %>%
+  ggplot(aes(x = New_ID_1, y = count)) +
+  geom_bar(stat = "identity", fill = "blue", color = "black", alpha = 0.7) +
+  labs(title = "Frequency of 'New_ID_1' Values", x = "Value", y = "Count") +
+  theme_minimal()
