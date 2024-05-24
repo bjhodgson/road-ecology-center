@@ -7,24 +7,41 @@ library(dplyr)
 library(ggplot2)
 
 # Specify the path to your main directory
-main_directory <- "H:\\median_barriers\\output_data"
+main_directory <- "H:\\median_barriers\\CROS_medians_dataset"
 
-# List all subdirectories in the main directory
-subdirectories <- list.dirs(path = main_directory, recursive = FALSE)
+# For separated folders file structure
+# # List all subdirectories in the main directory
+# subdirectories <- list.dirs(path = main_directory, recursive = FALSE)
+# 
+# # Function to list Excel files in a given directory
+# list_excel_files <- function(directory) {
+#   list.files(path = directory, pattern = "*.xlsx", full.names = TRUE)
+# }
+# 
+# # Get a list of Excel files from each subdirectory
+# file_list <- unlist(lapply(subdirectories, list_excel_files))
+# 
+# # Filter the list to only include files with "CROS_medians" in the name
+# filtered_file_list <- grep("CROS_medians.*_TableToExcel\\.xlsx$", file_list, value = TRUE)
+# 
+# # Read each Excel file into a list of dataframes
+# df_list <- lapply(filtered_file_list, read_excel)
+
+
+# For one data folder files structure
+
+# Function to list xlsx files in a given directory
+list_excel_files <- function(directory) {
+   list.files(path = directory, pattern = "*.xlsx", full.names = TRUE)
+}
 
 # Function to list Excel files in a given directory
-list_excel_files <- function(directory) {
-  list.files(path = directory, pattern = "*.xlsx", full.names = TRUE)
+list_xls_files <- function(directory) {
+  list.files(path = directory, pattern = "*.xls", full.names = TRUE)
 }
 
 # Get a list of Excel files from each subdirectory
-file_list <- unlist(lapply(subdirectories, list_excel_files))
-
-# Filter the list to only include files with "CROS_medians" in the name
-filtered_file_list <- grep("CROS_medians.*_TableToExcel\\.xlsx$", file_list, value = TRUE)
-
-# Read each Excel file into a list of dataframes
-df_list <- lapply(filtered_file_list, read_excel)
+file_list <- unlist(lapply(main_directory, list_excel_files))
 
 # Combine the dataframes into one dataframe
 combined_df <- bind_rows(df_list)
