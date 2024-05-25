@@ -66,3 +66,22 @@ cleaned_df_filtered %>%
   theme_minimal()
 
 
+# Visualize histogram of deer hits per concrete vs non-concrete median type
+cleaned_df_filtered %>%
+  filter(animal == "Mule (or Black tailed) Deer") %>%
+  group_by(concrete_median) %>%
+  summarise(count = n()) %>%
+  ggplot(aes(x = concrete_median, y = count)) +
+  geom_bar(stat = "identity", fill = "red", color = "black", alpha = 0.7) +
+  labs(title = "Frequency of Deer Hits by Concrete vs Non-concrete Medians", x = "Concrete Median", y = "Count") +
+  theme_minimal()
+
+# Visualize histogram of coyote hits per concrete vs non-concrete median type
+cleaned_df_filtered %>%
+  filter(animal == "Coyote") %>%
+  group_by(concrete_median) %>%
+  summarise(count = n()) %>%
+  ggplot(aes(x = concrete_median, y = count)) +
+  geom_bar(stat = "identity", fill = "red", color = "black", alpha = 0.7) +
+  labs(title = "Frequency of Coyote Hits by Concrete vs Non-concrete Medians", x = "Concrete Median", y = "Count") +
+  theme_minimal()
