@@ -54,7 +54,7 @@ cleaned_df_filtered %>%
   theme_minimal()
 
 # Add concrete median binary variable
-cleaned_df_filtered$concrete_median <- ifelse(cleaned_df_filtered$New_ID_1 == "con", 1, 0)
+cleaned_df_filtered$concrete_median <- as.factor(ifelse(cleaned_df_filtered$New_ID_1 == "con", 1, 0))
 
 # Visualize histogram of hits per concrete vs non-concrete median type
 cleaned_df_filtered %>%
@@ -62,12 +62,7 @@ cleaned_df_filtered %>%
   summarise(count = n()) %>%
   ggplot(aes(x = concrete_median, y = count)) +
   geom_bar(stat = "identity", fill = "blue", color = "black", alpha = 0.7) +
-  labs(title = "Frequency of Hits by Concrete vs Non-concrete Medians", x = "Value", y = "Count") +
+  labs(title = "Frequency of Hits by Concrete vs Non-concrete Medians", x = "Concrete Median", y = "Count") +
   theme_minimal()
-
-
-contingency_table <- cleaned_df_filtered %>%
-  group_by(concrete_median) %>%
-  summarise(count = n())
 
 
