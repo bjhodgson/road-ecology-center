@@ -123,42 +123,7 @@ ggplot(grouped_df, aes(x = factor(Pair_ID), y = count, fill = New_ID_1)) +
   theme_minimal() +
   scale_fill_brewer(palette = "Set1")
 
-# Group hits by unique pair ID, median type, year
-
-
-grouped_df_year <- cleaned_df[!is.na(cleaned_df$New_ID_1), ]
-grouped_df_year$obs_year <- year(ymd_hms(grouped_df_year$observatio))
-grouped_df_year1 <- grouped_df_year %>%
-  group_by(obs_year, Pair_ID, New_ID_1) %>%
-  summarise(count = n())
-
-date_range = c(2016:2023)
-
-summary_stats_medtype1 <- grouped_df_year1 %>% 
-  filter(obs_year %in% date_range) %>%
-  group_by(New_ID_1, obs_year) %>%
-  summarise(
-    mean_count = mean(count),
-    median_count = median(count),
-    sd_count = sd(count),
-    min_count = min(count),
-    max_count = max(count)
-  )
-
-ggplot(summary_stats_medtype1, aes(x=obs_year, y=mean_count, fill=New_ID_1)) +
-    geom_point() 
-
-ggplot(summary_stats_medtype1, aes(x=New_ID_1, y=mean_count, fill=as.factor(obs_year))) +
-  geom_bar(stat = "identity", position="stack")
-
-ggplot(summary_stats_medtype1, aes(x=New_ID_1, y=mean_count)) +
-  geom_bar(stat = "identity", position="stack", aes(fill=New_ID_1)) +
-  facet_wrap(vars(obs_year))
-
-
-# Summary statistics
-
-# Summary statistics per median type
+# Summary statistics by grouped type
 summary_stats_medtype <- grouped_df %>%
   group_by(New_ID_1) %>%
   summarise(
@@ -172,7 +137,6 @@ summary_stats_medtype <- grouped_df %>%
 # Print the results
 print(summary_stats_medtype)
 
-
 # Perform chi-squared test to determine association
 
 # Create a contingency table
@@ -183,3 +147,46 @@ chi_squared_test <- chisq.test(contingency_table)
 
 # Print the results of the chi-squared test
 print(chi_squared_test)
+
+
+
+
+# Group hits by year and median type
+
+# Create grouped dataframe of hits by year
+year_df <- cleaned_df %>%
+  filter(!is.na(New_ID_1)) %>%
+  mutate(obs_year = as.factor(year(ymd_hms(observatio)))) %>%
+  group_by(obs_year, Pair_ID, New_ID_1) %>%
+  summarise(count = n(), .groups = 'drop')
+
+date_range = c(2016:2023)
+
+# Summary statistics of hits by grouped year, type
+summary_stats_medtype_by_year <- year_df %>% 
+  filter(obs_year %in% date_range) %>%
+  group_by(New_ID_1, obs_year) %>%
+  summarise(
+    mean_count = mean(count),
+    median_count = median(count),
+    sd_count = sd(count),
+    min_count = min(count),
+    max_count = max(count)
+  )
+
+ggplot(summary_stats_medtype_by_year, aes(x=obs_year, y=mean_count, fill=New_ID_1)) +
+    geom_point() 
+
+ggplot(summary_stats_medtype_by_year, aes(x=New_ID_1, y=mean_count, fill=obs_year)) +
+  geom_bar(stat = "identity", position="stack") + 
+  theme_bw()
+
+# Visualize bar plot of hits by median type over time
+ggplot(summary_stats_medtype_by_year, aes(x=New_ID_1, y=mean_count)) +
+  geom_bar(stat = "identity", position="stack", aes(fill=New_ID_1)) +
+  facet_wrap(vars(obs_year)) + 
+  labs(x="", y="Average Hits per Mile", fill="Median Type") +
+  theme_bw()
+
+
+
