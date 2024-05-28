@@ -2,7 +2,7 @@ import csv
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 
-csv_file_name = "R98_S_contours_points30m.csv"
+csv_file_name = r"H:\I8_study_area\output_data\I8_contours30m_Points_TableToExcel.csv"
 csv_file = csv_file_name
 
 # Read CSV data and organize it by terrain lines
@@ -61,7 +61,7 @@ def csv_to_xml(csv_file, xml_file):
         xmlfile.write(xml_pretty_string)
 
 # Specify output file path
-xml_file_path = r'D:\Documents\road-ecology-center\tnm\terrain\terrain_data.xml'
+xml_file_path = r'H:\I8_study_area\output_data\terrain_data.xml'
 
 # Convert CSV to XML
 csv_to_xml(csv_file, xml_file_path)
