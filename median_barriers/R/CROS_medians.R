@@ -12,7 +12,7 @@ list_excel_files <- function(directory) {
   c(xls_files)
 }
 
-# Specify the path to your directory containing Excel files
+# Specify the path to your folder containing Excel files
 directory_path <- "D:\\Documents\\road-ecology-center\\median_barriers\\CROS_medians_dataset"
 
 # Get a list of Excel files from the directory
@@ -121,6 +121,23 @@ ggplot(grouped_df, aes(x = factor(Pair_ID), y = count, fill = New_ID_1)) +
        y = "Count") +
   theme_minimal() +
   scale_fill_brewer(palette = "Set1")
+
+
+# Summary statistics
+
+# Summary statistics per median type
+summary_stats_medtype <- grouped_df %>%
+  group_by(New_ID_1) %>%
+  summarise(
+    mean_count = mean(count),
+    median_count = median(count),
+    sd_count = sd(count),
+    min_count = min(count),
+    max_count = max(count)
+  )
+
+# Print the results
+print(summary_stats_medtype)
 
 
 # Perform chi-squared test to determine association
