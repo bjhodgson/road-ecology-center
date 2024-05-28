@@ -5,6 +5,7 @@
 library(readxl)
 library(dplyr)
 library(ggplot2)
+library(lubridate)
 
 # Function to list xlsx and xls files in a given directory
 list_excel_files <- function(directory) {
@@ -13,7 +14,7 @@ list_excel_files <- function(directory) {
 }
 
 # Specify the path to your folder containing Excel files
-directory_path <- "D:\\Documents\\road-ecology-center\\median_barriers\\CROS_medians_dataset"
+directory_path <- "C:\\Users\\HP\\Documents\\GitHub\\road-ecology-center\\median_barriers\\CROS_medians_dataset"
 
 # Get a list of Excel files from the directory
 file_list <- list_excel_files(directory_path)
@@ -121,6 +122,38 @@ ggplot(grouped_df, aes(x = factor(Pair_ID), y = count, fill = New_ID_1)) +
        y = "Count") +
   theme_minimal() +
   scale_fill_brewer(palette = "Set1")
+
+# Group hits by unique pair ID, median type, year
+
+
+grouped_df_year <- cleaned_df[!is.na(cleaned_df$New_ID_1), ]
+grouped_df_year$obs_year <- year(ymd_hms(grouped_df_year$observatio))
+grouped_df_year1 <- grouped_df_year %>%
+  group_by(obs_year, Pair_ID, New_ID_1) %>%
+  summarise(count = n())
+
+date_range = c(2016:2023)
+
+summary_stats_medtype1 <- grouped_df_year1 %>% 
+  filter(obs_year %in% date_range) %>%
+  group_by(New_ID_1, obs_year) %>%
+  summarise(
+    mean_count = mean(count),
+    median_count = median(count),
+    sd_count = sd(count),
+    min_count = min(count),
+    max_count = max(count)
+  )
+
+ggplot(summary_stats_medtype1, aes(x=obs_year, y=mean_count, fill=New_ID_1)) +
+    geom_point() 
+
+ggplot(summary_stats_medtype1, aes(x=New_ID_1, y=mean_count, fill=as.factor(obs_year))) +
+  geom_bar(stat = "identity", position="stack")
+
+ggplot(summary_stats_medtype1, aes(x=New_ID_1, y=mean_count)) +
+  geom_bar(stat = "identity", position="stack", aes(fill=New_ID_1)) +
+  facet_wrap(vars(obs_year))
 
 
 # Summary statistics
