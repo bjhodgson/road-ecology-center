@@ -43,13 +43,13 @@ cleaned_df <- combined_df %>%
   filter(chips_An_1 %in% c("Fatality, result of collision", "Fatality, result of dispatch") |
           condition %in% c("Dead") ) # Filter by kills
 
-# Histogram of total hits per median type
+# Histogram of total kills per median type
 cleaned_df %>%
   group_by(New_ID_1) %>%
   summarise(count = n()) %>%
   ggplot(aes(x = New_ID_1, y = count, fill = New_ID_1)) +
   geom_bar(stat = "identity") +
-  labs(title = "Total Hits per Median Type", x = "", y = "Total Hits", fill = "Median Type") +
+  labs(title = "Total Kills per Median Type", x = "", y = "Total Kills", fill = "Median Type") +
   theme_minimal()
 
 # Create list of excluded median types
@@ -65,19 +65,19 @@ cleaned_df_filtered %>%
   summarise(count = n()) %>%
   ggplot(aes(x = Pair_Type, y = count)) +
   geom_bar(stat = "identity", fill = "blue", color = "black", alpha = 0.7) +
-  labs(x = "Type of Median Pair", y = "Number of Pairs") +
+  labs(x = "Type of Median Pair", y = "Number of Kills") +
   theme_minimal()
 
 # Add concrete median binary variable
 cleaned_df_filtered$concrete_median <- as.factor(ifelse(cleaned_df_filtered$New_ID_1 == "con", 1, 0))
 
-# Histogram of hits per concrete vs non-concrete median type
+# Histogram of kills per concrete vs non-concrete median type
 cleaned_df_filtered %>%
   group_by(concrete_median) %>%
   summarise(count = n()) %>%
   ggplot(aes(x = concrete_median, y = count)) +
   geom_bar(stat = "identity", fill = "blue", color = "black", alpha = 0.7) +
-  labs(title = "Hits by Concrete vs Non-concrete Medians", x = "Concrete Median", y = "Total Hits") +
+  labs(title = "Kills by Concrete vs Non-concrete Medians", x = "Concrete Median", y = "Total Hits") +
   theme_minimal()
 
 
@@ -105,12 +105,12 @@ print(summary_stats_mediantype)
 # Stacked bar plot of hits per transect by median type
 ggplot(grouped_df, aes(x = factor(Pair_ID), y = count, fill = New_ID_1)) +
   geom_bar(stat = "identity", position = "stack") +
-  labs(title = "Number of Hits per Road Transect by Median Type",
+  labs(title = "Number of Kills per Road Transect by Median Type",
        x = "Pair ID",
-       y = "Total Hits",
+       y = "Total Kills",
        fill = "Median Type") +
-  theme_minimal() 
-
+  theme_minimal() #+
+  scale_fill_brewer(palette = "Set1")
 
 # Difference in counts (concrete - nonconcrete)
 difference_df <- grouped_df %>%
@@ -135,12 +135,6 @@ print(difference_df)
 boxplot(difference_df$difference)
 
 # Visualize distribution in density
-plot(density(difference_df$difference))
-title("Difference in Counts")
-# Add mean line
-abline(v = mean(final_df$difference), col = "red", lwd = 2)
-
-# Create a ggplot object
 ggplot(data = difference_df, aes(x = difference)) +
   geom_density() +
   ggtitle("Difference in Counts (concrete - nonconcrete)") +
@@ -176,28 +170,30 @@ summary_stats_mediantype_by_year <- year_df %>%
 
 print(summary_stats_medtype_by_year)
 
-# Visualize bar plot of hits by median type over time
+# Bar plot of average kills by median type over time
 ggplot(summary_stats_mediantype_by_year, aes(x=New_ID_1, y=mean_count)) +
   geom_bar(stat = "identity", position="stack", aes(fill=New_ID_1)) +
   facet_wrap(vars(obs_year)) + 
-  labs(x="", y="Average Hits per Mile", fill="Median Type") +
+  labs(x="", y="Average Kills per Mile", fill="Median Type") +
   theme_bw()
 
-# Visualize stacked bar plot of hits by median type over time
+# Bar plot of total kills by median type over time
+year_df %>% 
+  filter(obs_year %in% date_range) %>%
+  ggplot(aes(x=New_ID_1, y=count)) +
+  geom_bar(stat = "identity", position="stack", aes(fill=New_ID_1)) +
+  facet_wrap(vars(obs_year)) + 
+  labs(x="", y="Total Kills per Mile", fill="Median Type") +
+  theme_bw()
+
+# Stacked bar plot of total kills by median type over time
 year_df %>% 
   filter(obs_year %in% date_range) %>%
   group_by(New_ID_1, obs_year) %>%
   ggplot(aes(x=obs_year, y=count, fill=New_ID_1)) +
   geom_bar(stat = "identity", position="stack") + 
-  labs(x="", y="Total Hits", fill="Median Type") +
+  labs(x="", y="Total Kills", fill="Median Type") +
   theme_bw()
 
 
-# -------------------------------
-
-
-kills_df <- cleaned_df %>%
-  filter(chips_An_1 %in% c("Fatality, result of collision", "Fatality, result of dispatch") |
-          condition %in% c("Dead")
-           )
 
