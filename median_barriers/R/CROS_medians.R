@@ -191,36 +191,34 @@ year_df %>%
   theme_bw()
 
 
-# Comparison of Means
+# Mean difference in counts (concrete - nonconcrete)
+difference_df <- grouped_df %>%
+  filter(New_ID_1 %in% c("con", "veg", "thrie", "cab", "none")) %>% # Filter and mutate to add concrete_var category
+  mutate(concrete_var = ifelse(New_ID_1 == "con", "concrete", "nonconcrete")) %>%
+  pivot_wider(names_from = concrete_var, values_from = count, values_fill = list(count = 0)) %>% # Pivot to wide format
+  group_by(Pair_ID) %>%
+  summarise( # Summarize to get total counts for 'concrete' and 'nonconcrete' per Pair_ID
+    concrete = sum(concrete, na.rm = TRUE),
+    nonconcrete = sum(nonconcrete, na.rm = TRUE),
+    difference = concrete - nonconcrete
+  ) %>%
+  select(Pair_ID, difference) # Select desired columns for dataframe
 
-# Filter for 'con' and 'veg' counts, spread to wide format, then calculate the difference
-# Add the new column 'concrete_median' with three categories using nested ifelse statements
-grouped_df <- grouped_df %>%
-  mutate(concrete_var = ifelse(New_ID_1 == "con", "concrete",
-                                  ifelse(New_ID_1 == "tran", "transition", "nonconcrete")))
+# View the data frame
+print(difference_df)
 
-new_df <- grouped_df %>%
-  pivot_wider(names_from = concrete_var, values_from = count) %>%
-  mutate(difference = concrete - nonconcrete) %>%
-  select(Pair_ID, difference)
+# Exploratory visualizations of difference in counts 
 
+# Visualize distribution in boxplot
+boxplot(difference_df$difference)
 
-new_df <- grouped_df %>%
-  filter(New_ID_1 %in% c("con", "veg")) %>%
-  pivot_wider(names_from = New_ID_1, values_from = count) %>%
-  mutate(difference = con - veg) %>%
-  select(Pair_ID, difference)
+# Visualize distribution in density
+plot(density(difference_df$difference))
+# Add mean line
+abline(v = mean(final_df$difference), col = "red", lwd = 2)
 
-# Pivot to wide format and calculate the difference
-new_df <- grouped_df %>%
-  pivot_wider(names_from = concrete_var, values_from = count, values_fill = list(count = 0)) %>%
-  mutate(difference = concrete - nonconcrete) %>%
-  select(Pair_ID, difference)
-
-# Print the new data frame
-print(new_df)
-
-
+# Summary statistics
+summary(final_df$difference)
 #----------
 
 # ggplot(summary_stats_medtype_by_year, aes(x=obs_year, y=mean_count, fill=New_ID_1)) +
