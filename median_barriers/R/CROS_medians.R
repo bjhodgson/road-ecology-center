@@ -1,11 +1,9 @@
 # Install and load necessary packages
-# install.packages("readxl")
-# install.packages("dplyr")
-# install.packages("ggplot2")
 library(readxl)
 library(dplyr)
 library(ggplot2)
 library(lubridate)
+library(tidyr)
 
 # Function to list xlsx and xls files in a given directory
 list_excel_files <- function(directory) {
@@ -14,7 +12,7 @@ list_excel_files <- function(directory) {
 }
 
 # Specify the path to your folder containing Excel files
-directory_path <- "C:\\Users\\HP\\Documents\\GitHub\\road-ecology-center\\median_barriers\\CROS_medians_dataset"
+directory_path <- "D:\\Documents\\road-ecology-center\\median_barriers\\CROS_medians_dataset"
 
 # Get a list of Excel files from the directory
 file_list <- list_excel_files(directory_path)
@@ -160,7 +158,7 @@ year_df <- cleaned_df %>%
   group_by(obs_year, Pair_ID, New_ID_1) %>%
   summarise(count = n(), .groups = 'drop')
 
-date_range = c(2016:2023)
+date_range = c(2015:2023)
 
 # Summary statistics of hits by grouped year, type
 summary_stats_medtype_by_year <- year_df %>% 
@@ -174,12 +172,7 @@ summary_stats_medtype_by_year <- year_df %>%
     max_count = max(count)
   )
 
-ggplot(summary_stats_medtype_by_year, aes(x=obs_year, y=mean_count, fill=New_ID_1)) +
-    geom_point() 
-
-ggplot(summary_stats_medtype_by_year, aes(x=New_ID_1, y=mean_count, fill=obs_year)) +
-  geom_bar(stat = "identity", position="stack") + 
-  theme_bw()
+print(summary_stats_medtype_by_year)
 
 # Visualize bar plot of hits by median type over time
 ggplot(summary_stats_medtype_by_year, aes(x=New_ID_1, y=mean_count)) +
@@ -188,5 +181,61 @@ ggplot(summary_stats_medtype_by_year, aes(x=New_ID_1, y=mean_count)) +
   labs(x="", y="Average Hits per Mile", fill="Median Type") +
   theme_bw()
 
+# Visualize stacked bar plot of hits by median type over time
+year_df %>% 
+  filter(obs_year %in% date_range) %>%
+  group_by(New_ID_1, obs_year) %>%
+  ggplot(aes(x=obs_year, y=count, fill=New_ID_1)) +
+  geom_bar(stat = "identity", position="stack") + 
+  labs(x="", y="Total Hits", fill="Median Type") +
+  theme_bw()
 
 
+# Comparison of Means
+
+# Filter for 'con' and 'veg' counts, spread to wide format, then calculate the difference
+# Add the new column 'concrete_median' with three categories using nested ifelse statements
+grouped_df <- grouped_df %>%
+  mutate(concrete_var = ifelse(New_ID_1 == "con", "concrete",
+                                  ifelse(New_ID_1 == "tran", "transition", "nonconcrete")))
+
+new_df <- grouped_df %>%
+  pivot_wider(names_from = concrete_var, values_from = count) %>%
+  mutate(difference = concrete - nonconcrete) %>%
+  select(Pair_ID, difference)
+
+
+new_df <- grouped_df %>%
+  filter(New_ID_1 %in% c("con", "veg")) %>%
+  pivot_wider(names_from = New_ID_1, values_from = count) %>%
+  mutate(difference = con - veg) %>%
+  select(Pair_ID, difference)
+
+# Pivot to wide format and calculate the difference
+new_df <- grouped_df %>%
+  pivot_wider(names_from = concrete_var, values_from = count, values_fill = list(count = 0)) %>%
+  mutate(difference = concrete - nonconcrete) %>%
+  select(Pair_ID, difference)
+
+# Print the new data frame
+print(new_df)
+
+
+#----------
+
+# ggplot(summary_stats_medtype_by_year, aes(x=obs_year, y=mean_count, fill=New_ID_1)) +
+#   geom_point() 
+# 
+# ggplot(summary_stats_medtype_by_year, aes(x=New_ID_1, y=mean_count, fill=obs_year)) +
+#   geom_bar(stat = "identity", position="stack") + 
+#   theme_bw()
+
+# 
+# year_df %>% 
+#   filter(obs_year %in% date_range) %>%
+#   group_by(New_ID_1, obs_year) %>% 
+#   ggplot(aes(x=New_ID_1, y=count)) +
+#   geom_bar(stat = "identity", position="stack", aes(fill=New_ID_1)) +
+#   facet_wrap(vars(obs_year)) + 
+#   labs(x="", y="Count", fill="Median Type") +
+#   theme_bw()
