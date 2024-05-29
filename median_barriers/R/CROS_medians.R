@@ -37,8 +37,11 @@ columns_to_remove <- c(
   "Longitud_1"
 )
 
-# Remove the specified columns
-cleaned_df <- combined_df %>% select(-one_of(columns_to_remove))
+# Remove the specified columns and filter by kills
+cleaned_df <- combined_df %>% 
+  select(-one_of(columns_to_remove)) %>%
+  filter(chips_An_1 %in% c("Fatality, result of collision", "Fatality, result of dispatch") |
+          condition %in% c("Dead") ) # Filter by kills
 
 # Histogram of total hits per median type
 cleaned_df %>%
@@ -46,7 +49,7 @@ cleaned_df %>%
   summarise(count = n()) %>%
   ggplot(aes(x = New_ID_1, y = count, fill = New_ID_1)) +
   geom_bar(stat = "identity") +
-  labs(x = "", y = "Total Hits", fill = "Median Type") +
+  labs(title = "Total Hits per Median Type", x = "", y = "Total Hits", fill = "Median Type") +
   theme_minimal()
 
 # Create list of excluded median types
@@ -86,7 +89,7 @@ grouped_df <- cleaned_df[!is.na(cleaned_df$New_ID_1), ] %>%
   summarise(count = n())
 
 # Summary statistics by grouped type
-summary_stats_medtype <- grouped_df %>%
+summary_stats_mediantype <- grouped_df %>%
   group_by(New_ID_1) %>%
   summarise(
     mean_count = mean(count),
@@ -97,7 +100,7 @@ summary_stats_medtype <- grouped_df %>%
   )
 
 # Print the results
-print(summary_stats_medtype)
+print(summary_stats_mediantype)
 
 # Stacked bar plot of hits per transect by median type
 ggplot(grouped_df, aes(x = factor(Pair_ID), y = count, fill = New_ID_1)) +
@@ -160,7 +163,7 @@ year_df <- cleaned_df %>%
 date_range = c(2015:2023)
 
 # Summary statistics of hits by grouped year, type
-summary_stats_medtype_by_year <- year_df %>% 
+summary_stats_mediantype_by_year <- year_df %>% 
   filter(obs_year %in% date_range) %>%
   group_by(New_ID_1, obs_year) %>%
   summarise(
@@ -174,7 +177,7 @@ summary_stats_medtype_by_year <- year_df %>%
 print(summary_stats_medtype_by_year)
 
 # Visualize bar plot of hits by median type over time
-ggplot(summary_stats_medtype_by_year, aes(x=New_ID_1, y=mean_count)) +
+ggplot(summary_stats_mediantype_by_year, aes(x=New_ID_1, y=mean_count)) +
   geom_bar(stat = "identity", position="stack", aes(fill=New_ID_1)) +
   facet_wrap(vars(obs_year)) + 
   labs(x="", y="Average Hits per Mile", fill="Median Type") +
@@ -190,22 +193,11 @@ year_df %>%
   theme_bw()
 
 
+# -------------------------------
 
-#----------
 
-# ggplot(summary_stats_medtype_by_year, aes(x=obs_year, y=mean_count, fill=New_ID_1)) +
-#   geom_point() 
-# 
-# ggplot(summary_stats_medtype_by_year, aes(x=New_ID_1, y=mean_count, fill=obs_year)) +
-#   geom_bar(stat = "identity", position="stack") + 
-#   theme_bw()
+kills_df <- cleaned_df %>%
+  filter(chips_An_1 %in% c("Fatality, result of collision", "Fatality, result of dispatch") |
+          condition %in% c("Dead")
+           )
 
-# 
-# year_df %>% 
-#   filter(obs_year %in% date_range) %>%
-#   group_by(New_ID_1, obs_year) %>% 
-#   ggplot(aes(x=New_ID_1, y=count)) +
-#   geom_bar(stat = "identity", position="stack", aes(fill=New_ID_1)) +
-#   facet_wrap(vars(obs_year)) + 
-#   labs(x="", y="Count", fill="Median Type") +
-#   theme_bw()
