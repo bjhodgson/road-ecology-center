@@ -85,16 +85,6 @@ grouped_df <- cleaned_df[!is.na(cleaned_df$New_ID_1), ] %>%
   group_by(Pair_ID, New_ID_1) %>%
   summarise(count = n())
 
-# Stacked bar plot of hits per transect by median type
-ggplot(grouped_df, aes(x = factor(Pair_ID), y = count, fill = New_ID_1)) +
-  geom_bar(stat = "identity", position = "stack") +
-  labs(title = "Number of Hits per Road Transect by Median Type",
-       x = "Pair ID",
-       y = "Total Hits",
-       fill = "Median Type") +
-  theme_minimal() 
-
-
 # Summary statistics by grouped type
 summary_stats_medtype <- grouped_df %>%
   group_by(New_ID_1) %>%
@@ -109,7 +99,17 @@ summary_stats_medtype <- grouped_df %>%
 # Print the results
 print(summary_stats_medtype)
 
-# Mean difference in counts (concrete - nonconcrete)
+# Stacked bar plot of hits per transect by median type
+ggplot(grouped_df, aes(x = factor(Pair_ID), y = count, fill = New_ID_1)) +
+  geom_bar(stat = "identity", position = "stack") +
+  labs(title = "Number of Hits per Road Transect by Median Type",
+       x = "Pair ID",
+       y = "Total Hits",
+       fill = "Median Type") +
+  theme_minimal() 
+
+
+# Difference in counts (concrete - nonconcrete)
 difference_df <- grouped_df %>%
   filter(New_ID_1 %in% c("con", "veg", "thrie", "cab", "none")) %>% # Filter and mutate to add concrete_var category
   mutate(concrete_var = ifelse(New_ID_1 == "con", "concrete", "nonconcrete")) %>%
@@ -125,6 +125,7 @@ difference_df <- grouped_df %>%
 # View the data frame
 print(difference_df)
 
+
 # Exploratory visualizations of difference in counts 
 
 # Visualize distribution in boxplot
@@ -132,31 +133,19 @@ boxplot(difference_df$difference)
 
 # Visualize distribution in density
 plot(density(difference_df$difference))
+title("Difference in Counts")
 # Add mean line
 abline(v = mean(final_df$difference), col = "red", lwd = 2)
 
+# Create a ggplot object
+ggplot(data = difference_df, aes(x = difference)) +
+  geom_density() +
+  ggtitle("Difference in Counts (concrete - nonconcrete)") +
+  geom_vline(aes(xintercept = mean(difference)), color = "red", linetype = "dashed", size = 1.5) + # Add line for mean difference
+  theme_bw()
+
 # Summary statistics
-summary(final_df$difference)
-
-
-
-
-
-
-
-
-# Perform chi-squared test to determine association
-
-# Create a contingency table
-contingency_table <- table(cleaned_df_filtered$concrete_median)
-
-# Perform the chi-squared test
-chi_squared_test <- chisq.test(contingency_table)
-
-# Print the results of the chi-squared test
-print(chi_squared_test)
-
-
+summary(difference_df$difference)
 
 
 # Group hits by year and median type
