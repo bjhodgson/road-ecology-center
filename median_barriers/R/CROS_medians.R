@@ -114,8 +114,8 @@ ggplot(grouped_df, aes(x = factor(Pair_ID), y = count, fill = New_ID_1)) +
 
 # Difference in counts (concrete - nonconcrete)
 difference_df <- grouped_df %>%
-  filter(New_ID_1 %in% c("con", "veg", "thrie", "cab", "none")) %>% # Filter and mutate to add concrete_var category
-  mutate(concrete_var = ifelse(New_ID_1 == "con", "concrete", "nonconcrete")) %>%
+  filter(New_ID_1 %in% c("con", "veg", "thrie", "cab", "none")) %>% # Filter out transition transects
+  mutate(concrete_var = ifelse(New_ID_1 == "con", "concrete", "nonconcrete")) %>% # Create concrete binary variable
   pivot_wider(names_from = concrete_var, values_from = count, values_fill = list(count = 0)) %>% # Pivot to wide format
   group_by(Pair_ID) %>%
   summarise( # Summarize to get total counts for 'concrete' and 'nonconcrete' per Pair_ID
@@ -157,21 +157,24 @@ year_df <- cleaned_df %>%
 date_range = c(2015:2023)
 
 # Summary statistics of hits by grouped year, type
-summary_stats_mediantype_by_year <- year_df %>% 
+summary_stats_year <- year_df %>% 
   filter(obs_year %in% date_range) %>%
   group_by(New_ID_1, obs_year) %>%
   summarise(
+    total_count = sum(count),
     mean_count = mean(count),
     median_count = median(count),
     sd_count = sd(count),
     min_count = min(count),
-    max_count = max(count)
+    max_count = max(count),
+    n_transects = sum(length(unique(Pair_ID))), # Number of transects
+    
   )
 
-print(summary_stats_medtype_by_year)
+print(summary_stats_year)
 
 # Bar plot of average kills by median type over time
-ggplot(summary_stats_mediantype_by_year, aes(x=New_ID_1, y=mean_count)) +
+ggplot(summary_stats_year, aes(x=New_ID_1, y=mean_count)) +
   geom_bar(stat = "identity", position="stack", aes(fill=New_ID_1)) +
   facet_wrap(vars(obs_year)) + 
   labs(x="", y="Average Kills per Mile", fill="Median Type") +
@@ -197,14 +200,13 @@ year_df %>%
 
 #----
 
-# Summarize kills by number of transects
+# Summarize kills by number of transects and take weighted average
 summarized_df <- year_df %>%
   group_by(obs_year, New_ID_1) %>%
   summarise(total_count = sum(count), # Total count
             avg_count = mean(count), # Average across number of transects
             n = sum(length(unique(Pair_ID))), # Number of transects
             weighted_avg_count = sum(count * length(unique(Pair_ID))) / sum(length(unique(Pair_ID))) # Weighted average across number of transects
-            
               )
 
 # Bar plot of average kills by median type over time WITH total transect count
