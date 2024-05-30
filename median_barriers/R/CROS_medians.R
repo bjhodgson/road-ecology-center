@@ -229,6 +229,16 @@ ggplot( aes(x = New_ID_1, y = weighted_avg_count, fill = New_ID_1)) +
 
 # -------------- CONDENSED DF PLOTS
 
+# Stacked bar plot of total kills by median type over time
+summary_stats_year %>%
+  filter(obs_year %in% date_range) %>%
+  group_by(New_ID_1, obs_year) %>%
+  ggplot(aes(x=obs_year, y=total_count, fill=New_ID_1)) +
+  geom_bar(stat = "identity", position="stack") + 
+  labs(x="", y="Total Kills", fill="Median Type") +
+  theme_bw()
+
+
 # Bar plot of total kills by median type over time
 summary_stats_year %>%
   filter(obs_year %in% date_range) %>%
@@ -258,11 +268,15 @@ summary_stats_year %>%
   theme_bw()
 
 
-# Stacked bar plot of total kills by median type over time
-year_df %>% 
-  filter(obs_year %in% date_range) %>%
-  group_by(New_ID_1, obs_year) %>%
-  ggplot(aes(x=obs_year, y=count, fill=New_ID_1)) +
-  geom_bar(stat = "identity", position="stack") + 
-  labs(x="", y="Total Kills", fill="Median Type") +
+
+
+# Bar plot of total kills by median type over time
+summary_stats_year %>%
+ # filter(New_ID_1 == "veg") %>%
+  mutate(obs_year = as.numeric(as.character(obs_year))) %>%
+  ggplot(aes(x = obs_year, y = total_count, color = New_ID_1)) +
+  geom_point() + 
+  labs(x = "", y = "Total Kills per Mile", color = "Median Type") +
   theme_bw()
+
+##
