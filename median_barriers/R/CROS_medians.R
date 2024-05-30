@@ -161,14 +161,14 @@ summary_stats_year <- year_df %>%
   filter(obs_year %in% date_range) %>%
   group_by(New_ID_1, obs_year) %>%
   summarise(
-    total_count = sum(count),
-    mean_count = mean(count),
+    total_count = sum(count), # Total count
+    mean_count = mean(count), # Average count across number of transects
     median_count = median(count),
     sd_count = sd(count),
     min_count = min(count),
     max_count = max(count),
     n_transects = sum(length(unique(Pair_ID))), # Number of transects
-    
+    weighted_avg_count = sum(count * length(unique(Pair_ID))) / sum(length(unique(Pair_ID))) # Weighted average across number of transects
   )
 
 print(summary_stats_year)
@@ -226,4 +226,44 @@ ggplot( aes(x = New_ID_1, y = weighted_avg_count, fill = New_ID_1)) +
   geom_bar(stat = "identity") +
   facet_wrap(vars(obs_year)) +
   labs(x = "Category", y = "Weighted Average Kills per Mile", fill = "Median Type") +
+  theme_bw()
+
+# -------------- CONDENSED DF PLOTS
+
+# Bar plot of total kills by median type over time
+summary_stats_year %>%
+  filter(obs_year %in% date_range) %>%
+  ggplot(aes(x=New_ID_1, y=total_count)) +
+  geom_bar(stat = "identity", position="stack", aes(fill=New_ID_1)) +
+  facet_wrap(vars(obs_year)) + 
+  labs(x="", y="Total Kills per Mile", fill="Median Type") +
+  theme_bw()
+
+# Bar plot of average kills by median type over time WITH total transect count
+summary_stats_year %>%
+  filter(obs_year %in% date_range) %>%
+  ggplot(aes(x=New_ID_1, y=mean_count)) +
+  geom_bar(stat = "identity", position="stack", aes(fill=New_ID_1)) +
+  geom_text(aes(label = n_transects), position = position_stack(vjust = 0.5), size = 3) +
+  facet_wrap(vars(obs_year)) + 
+  labs(x="", y="Average Kills per Mile", fill="Median Type") +
+  theme_bw()
+
+# Bar plot of WEIGHTED average kills by median type over time (weighting by # of transects, n)
+summary_stats_year %>%
+  filter(obs_year %in% date_range) %>%
+  ggplot( aes(x = New_ID_1, y = weighted_avg_count, fill = New_ID_1)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(vars(obs_year)) +
+  labs(x = "Category", y = "Weighted Average Kills per Mile", fill = "Median Type") +
+  theme_bw()
+
+
+# Stacked bar plot of total kills by median type over time
+year_df %>% 
+  filter(obs_year %in% date_range) %>%
+  group_by(New_ID_1, obs_year) %>%
+  ggplot(aes(x=obs_year, y=count, fill=New_ID_1)) +
+  geom_bar(stat = "identity", position="stack") + 
+  labs(x="", y="Total Kills", fill="Median Type") +
   theme_bw()
