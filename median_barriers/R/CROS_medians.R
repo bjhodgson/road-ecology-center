@@ -158,7 +158,6 @@ date_range = c(2015:2023)
 
 # Summary statistics of hits by grouped year, type
 summary_stats_year <- year_df %>% 
-  filter(obs_year %in% date_range) %>%
   group_by(New_ID_1, obs_year) %>%
   summarise(
     total_count = sum(count), # Total count
