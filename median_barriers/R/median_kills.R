@@ -143,7 +143,7 @@ ggplot(data = difference_df, aes(x = difference)) +
   geom_vline(aes(xintercept = mean(difference)), color = "red", linetype = "dashed", size = 1.5) + # Add line for mean difference
   theme_bw()
 
-# Summary statistics
+# Summary statistics -- stat test to check
 summary(difference_df$difference)
 sd(difference_df$difference) # Std Deviation
 
