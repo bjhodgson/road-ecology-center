@@ -53,11 +53,11 @@ cleaned_df %>%
   theme_minimal()
 
 # Create list of excluded median types
-exclude_values <- c("tran")
+exclude_values <- c("tran") 
 
 # Filter out excluded median types
 cleaned_df_filtered <- cleaned_df %>%
-  filter(!New_ID_1 %in% exclude_values)
+  filter(!New_ID_1 %in% exclude_values) # Filter out median transitions
 
 # Histogram of number of median pair types
 cleaned_df_filtered %>%
@@ -71,13 +71,17 @@ cleaned_df_filtered %>%
 # Add concrete median binary variable
 cleaned_df_filtered$concrete_median <- as.factor(ifelse(cleaned_df_filtered$New_ID_1 == "con", 1, 0))
 
-# Histogram of kills per concrete vs non-concrete median type
-cleaned_df_filtered %>%
+# Calculate total kill counts by concrete/non-concrete medians
+total_counts_df <- cleaned_df_filtered %>%
   group_by(concrete_median) %>%
   summarise(count = n()) %>%
+  mutate(difference = sum(count[concrete_median == 1]) - sum(count[concrete_median == 0]))
+
+# Histogram of kills per concrete vs non-concrete median type
+total_counts_df %>%
   ggplot(aes(x = concrete_median, y = count)) +
   geom_bar(stat = "identity", fill = "blue", color = "black", alpha = 0.7) +
-  labs(title = "Kills by Concrete vs Non-concrete Medians", x = "Concrete Median", y = "Total Hits") +
+  labs(title = "Kills by Concrete vs Non-concrete Medians", x = "Concrete Median", y = "Total Kits") +
   theme_minimal()
 
 
@@ -104,7 +108,7 @@ print(summary_stats_df)
 ggplot(grouped_df, aes(x = factor(Pair_ID), y = count, fill = New_ID_1)) +
   geom_bar(stat = "identity", position = "stack") +
   labs(title = "Number of Kills per Road Transect by Median Type",
-       x = "Pair ID",
+       x = "Median Pair ID",
        y = "Total Kills",
        fill = "Median Type") +
   theme_minimal() #+
@@ -135,7 +139,7 @@ boxplot(difference_df$difference)
 # Visualize distribution in density
 ggplot(data = difference_df, aes(x = difference)) +
   geom_density() +
-  ggtitle("Difference in Counts (concrete - nonconcrete)") +
+  ggtitle("Difference in Kill Counts (concrete - nonconcrete)") +
   geom_vline(aes(xintercept = mean(difference)), color = "red", linetype = "dashed", size = 1.5) + # Add line for mean difference
   theme_bw()
 
@@ -205,6 +209,17 @@ summarized_df %>%
   facet_wrap(vars(obs_year)) +
   labs(title = "Weighted Average Kills", x = "Category", y = "Weighted Average Kills per Mile", fill = "Median Type") +
   theme_bw()
+
+# Bar plot of AVERAGE hits by concrete/non-concrete median type over time
+summarized_df %>%
+  filter(obs_year %in% date_range) %>%
+  mutate(concrete_var = ifelse(New_ID_1 == "con", "concrete", "nonconcrete")) %>% # Create concrete binary variable
+  ggplot(aes(x = concrete_var, y = mean_count, fill = concrete_var)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(vars(obs_year)) +
+  labs(title = "Average Kills by Concrete/Non-concrete Medians", x = "Median Type", y = "Average Kills per Mile", fill = "Median Type") +
+  theme_bw()
+
 
 
 # Scatterplot of total kills by median type over time
