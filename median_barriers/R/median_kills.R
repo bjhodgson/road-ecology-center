@@ -127,15 +127,16 @@ difference_df <- grouped_df %>%
   summarise( # Summarize to get total counts for 'concrete' and 'nonconcrete' per Pair_ID
     concrete = sum(concrete, na.rm = TRUE),
     nonconcrete = sum(nonconcrete, na.rm = TRUE),
-    difference = concrete - nonconcrete
-  ) %>%
+    difference = concrete - nonconcrete,
+    prop_difference = difference / (concrete + nonconcrete)
+  ) #%>%
   select(Pair_ID, concrete, nonconcrete, difference) # Select desired columns for dataframe
 
 # View the data frame
 print(difference_df)
 
 
-# Exploratory visualizations of difference in counts 
+# Exploratory visualizations of proportional difference in counts 
 
 # Visualize distribution in boxplot
 boxplot(difference_df$difference)
@@ -143,15 +144,15 @@ boxplot(difference_df$difference)
 # ***
 
 # Visualize distribution in density
-ggplot(data = difference_df, aes(x = difference)) +
+ggplot(data = difference_df, aes(x = prop_difference)) +
   geom_density() +
-  ggtitle("Difference in Kill Counts (concrete - nonconcrete)") +
-  geom_vline(aes(xintercept = mean(difference)), color = "red", linetype = "dashed", size = 1.5) + # Add line for mean difference
+  ggtitle("Proportional Difference in Kill Counts (concrete - nonconcrete) / (concrete + nonconcrete)") +
+  geom_vline(aes(xintercept = mean(prop_difference)), color = "red", linetype = "dashed", size = 1.5) + # Add line for mean difference
   theme_bw()
 
 # Summary statistics -- stat test to check
-summary(difference_df$difference)
-sd(difference_df$difference) # Std Deviation
+summary(difference_df$prop_difference)
+sd(difference_df$prop_difference) # Std Deviation
 
 
 # Group hits by year and median type
@@ -218,43 +219,9 @@ summarized_df %>%
   labs(title = "Weighted Average Kills", x = "Category", y = "Weighted Average Kills per Mile", fill = "Median Type") +
   theme_bw()
 
-# Bar plot of AVERAGE hits by concrete/non-concrete median type over time
-summarized_df %>%
-  filter(obs_year %in% date_range) %>%
-  mutate(concrete_var = ifelse(New_ID_1 == "con", "concrete", "nonconcrete")) %>% # Create concrete binary variable
-  ggplot(aes(x = concrete_var, y = mean_count, fill = concrete_var)) +
-  geom_bar(stat = "identity") +
-  facet_wrap(vars(obs_year)) +
-  labs(title = "Average Kills by Concrete/Non-concrete Medians", x = "Median Type", y = "Average Kills per Mile", fill = "Median Type") +
-  theme_bw()
 
-
-
-# Scatterplot of total kills by median type over time
-summarized_df %>%
- # filter(New_ID_1 == "veg") %>%
-  mutate(obs_year = as.numeric(as.character(obs_year))) %>%
-  ggplot(aes(x = obs_year, y = total_count, color = New_ID_1)) +
-  geom_point() + 
-  labs(x = "", y = "Total Kills per Mile", color = "Median Type") +
-  theme_bw()
-
-
-
-
-
-
-# Create grouped dataframe of kills by year
-year_df <- cleaned_df %>%
-  filter(!is.na(New_ID_1)) %>%
-  mutate(obs_year = as.factor(year(ymd_hms(observatio)))) %>%
-  group_by(obs_year, Pair_ID, New_ID_1) %>%
-  summarise(count = n(), .groups = 'drop')
-
-date_range = c(2015:2023)
-
-# Summary statistics of kills by grouped year, median type
-test_df <- year_df %>% 
+# Group by concrete/non-concrete
+con_df <- year_df %>% 
   mutate(concrete_var = ifelse(New_ID_1 == "con", "concrete", "nonconcrete")) %>% # Create concrete binary variable
   group_by(concrete_var, obs_year) %>%
   summarise(
@@ -265,15 +232,14 @@ test_df <- year_df %>%
     min_count = min(count),
     max_count = max(count),
     n_transects = sum(length(unique(Pair_ID))), # Number of transects
-    weighted_avg_count = sum(count * length(unique(Pair_ID))) / sum(length(unique(Pair_ID))) # Weighted average across number of transects
+    #weighted_avg_count = sum(count * length(unique(Pair_ID))) / sum(length(unique(Pair_ID))) # Weighted average across number of transects
   )
 
-
-test_df %>%
+# Bar plot of AVERAGE hits by concrete/non-concrete median type over time
+con_df %>%
   filter(obs_year %in% date_range) %>%
-  #mutate(concrete_var = ifelse(New_ID_1 == "con", "concrete", "nonconcrete")) %>% # Create concrete binary variable
   ggplot(aes(x = concrete_var, y = mean_count, fill = concrete_var)) +
   geom_bar(stat = "identity") +
-  #facet_wrap(vars(obs_year)) +
+  facet_wrap(vars(obs_year)) +
   labs(title = "Average Kills by Concrete/Non-concrete Medians", x = "Median Type", y = "Average Kills per Mile", fill = "Median Type") +
   theme_bw()
