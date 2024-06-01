@@ -59,6 +59,8 @@ exclude_values <- c("tran")
 cleaned_df_filtered <- cleaned_df %>%
   filter(!New_ID_1 %in% exclude_values) # Filter out median transitions
 
+# ***
+
 # Histogram of number of median pair types
 cleaned_df_filtered %>%
   group_by(Pair_Type) %>%
@@ -104,6 +106,8 @@ summary_stats_df <- grouped_df %>%
 # Print the results
 print(summary_stats_df)
 
+# ***
+
 # Stacked bar plot of hits per transect by median type
 ggplot(grouped_df, aes(x = factor(Pair_ID), y = count, fill = New_ID_1)) +
   geom_bar(stat = "identity", position = "stack") +
@@ -135,6 +139,8 @@ print(difference_df)
 
 # Visualize distribution in boxplot
 boxplot(difference_df$difference)
+
+# ***
 
 # Visualize distribution in density
 ggplot(data = difference_df, aes(x = difference)) +
@@ -181,6 +187,8 @@ summarized_df %>%
   geom_bar(stat = "identity", position="stack") + 
   labs(x="", y="Total Kills", fill="Median Type") +
   theme_bw()
+
+# ***
 
 # Bar plot of TOTAL kills by median type over time
 summarized_df %>%
@@ -229,4 +237,43 @@ summarized_df %>%
   ggplot(aes(x = obs_year, y = total_count, color = New_ID_1)) +
   geom_point() + 
   labs(x = "", y = "Total Kills per Mile", color = "Median Type") +
+  theme_bw()
+
+
+
+
+
+
+# Create grouped dataframe of kills by year
+year_df <- cleaned_df %>%
+  filter(!is.na(New_ID_1)) %>%
+  mutate(obs_year = as.factor(year(ymd_hms(observatio)))) %>%
+  group_by(obs_year, Pair_ID, New_ID_1) %>%
+  summarise(count = n(), .groups = 'drop')
+
+date_range = c(2015:2023)
+
+# Summary statistics of kills by grouped year, median type
+test_df <- year_df %>% 
+  mutate(concrete_var = ifelse(New_ID_1 == "con", "concrete", "nonconcrete")) %>% # Create concrete binary variable
+  group_by(concrete_var, obs_year) %>%
+  summarise(
+    total_count = sum(count), # Total count
+    mean_count = mean(count), # Average count across number of transects
+    median_count = median(count),
+    sd_count = sd(count),
+    min_count = min(count),
+    max_count = max(count),
+    n_transects = sum(length(unique(Pair_ID))), # Number of transects
+    weighted_avg_count = sum(count * length(unique(Pair_ID))) / sum(length(unique(Pair_ID))) # Weighted average across number of transects
+  )
+
+
+test_df %>%
+  filter(obs_year %in% date_range) %>%
+  #mutate(concrete_var = ifelse(New_ID_1 == "con", "concrete", "nonconcrete")) %>% # Create concrete binary variable
+  ggplot(aes(x = concrete_var, y = mean_count, fill = concrete_var)) +
+  geom_bar(stat = "identity") +
+  #facet_wrap(vars(obs_year)) +
+  labs(title = "Average Kills by Concrete/Non-concrete Medians", x = "Median Type", y = "Average Kills per Mile", fill = "Median Type") +
   theme_bw()
