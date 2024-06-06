@@ -3,6 +3,10 @@
 #df <- read.csv("C:\\Users\\Leo Hecht\\Documents\\Road Ecology\\Hotspot Report\\top_half.csv") # Leo path
 df <- read.csv("H:\\hotspots\\fencing_crossings\\output_data\\points_table.csv") # Ben path
 
+# Test subset
+df <- df[df$OBJECTID <= 500000, ]
+
+
 # Identify bridge points
 bridge_indices <- which(df$VCU == 0)
 
@@ -26,5 +30,7 @@ for (bridge_idx in bridge_indices) {
 # Save the edited dataset
 #write.csv(df, "C:\\Users\\Leo Hecht\\Documents\\Road Ecology\\Hotspot Report\\edited_dataset.csv", row.names = FALSE) # Leo path
 write.csv(df, "H:\\hotspots\\fencing_crossings\\output_data\\updated_points_table.csv", row.names = FALSE) # Ben path
+
+
 
 
