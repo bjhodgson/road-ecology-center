@@ -15,7 +15,7 @@ for (i in 1:nrow(df)) {
     df[i+53, 'NearBridge'] = 1
     df[i-53, 'NearBridge'] = 1
     
-    
+    test
     
     
      }
