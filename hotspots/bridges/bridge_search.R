@@ -2,7 +2,7 @@ library(dplyr)
 
 # Read in csv as dataframe
 #df <- read.csv("C:\\Users\\Leo Hecht\\Documents\\Road Ecology\\Hotspot Report\\top_half.csv") # Leo path
-df <- read.csv("H:\\hotspots\\fencing_crossings\\output_data\\points_table.csv") # Ben path
+df <- read.csv("H:\\hotspots\\bridges\\output_data\\points_table.csv") # Ben path
 
 # Test subset
 #df <- df[df$OBJECTID <= 500000, ]
