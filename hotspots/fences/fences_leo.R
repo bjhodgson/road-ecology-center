@@ -46,3 +46,44 @@ for (i in seq_along(bridge_indices)) {
 write.csv(points_100ft, "C:\\Users\\Leo Hecht\\Documents\\Road Ecology\\Hotspot Report\\edited_dataset_with_fence.csv", row.names = FALSE)
 
 
+
+
+
+
+
+
+#new
+
+
+# Load the dataset
+points_100ft <- read.csv("C:\\Users\\Leo Hecht\\Documents\\Road Ecology\\Hotspot Report\\output_data\\points_table_fence.csv")
+
+# Create a new column called "fence" and initialize it to 0
+points_100ft$fence <- 0
+
+# Identify bridge points
+bridge_indices <- which(points_100ft$VCU == 0)
+
+# Loop through each pair of bridge indices
+for (i in seq_along(bridge_indices)) {
+  # Define the current bridge index
+  bridge_idx <- bridge_indices[i]
+  
+  # Skip if it's the last bridge (no bridge after it to form a pair)
+  if (i == length(bridge_indices)) {
+    next
+  }
+  
+  # Define the next bridge index
+  next_bridge_idx <- bridge_indices[i + 1]
+  
+  # Check if there is at least one point with annl_nc >= 2 between the bridges
+  if (any(points_100ft$annl_nc[(bridge_idx + 1):(next_bridge_idx - 1)] >= 2)) {
+    # Mark points between the current and next bridge
+    points_100ft$fence[bridge_idx:next_bridge_idx] <- 1
+  }
+}
+
+# Save the edited dataset
+write.csv(points_100ft, "C:\\Users\\Leo Hecht\\Documents\\Road Ecology\\Hotspot Report\\dataset_with_fence_processed.csv", row.names = FALSE)
+
