@@ -4,7 +4,7 @@ library(writexl)
 
 # Read in csv as dataframe
 #df <- read.csv("C:\\Users\\Leo Hecht\\Documents\\Road Ecology\\Hotspot Report\\top_half.csv") # Leo path
-df <- read.csv("H:\\hotspots\\bridges\\bridges_new\\output_data\\wcc_bridges.csv") # Ben path
+df <- read.csv("D:\\bridges\\output_data\\wcc_bridges.csv") # Ben path
 
 # Test subset
 #df <- df[df$OBJECTID <= 500000, ]
@@ -77,7 +77,7 @@ for (i in 2:nrow(df_filtered)) {
 
 # Save the edited dataset to csv
 #write.csv(df, "C:\\Users\\Leo Hecht\\Documents\\Road Ecology\\Hotspot Report\\edited_dataset.csv", row.names = FALSE) # Leo path
-write.csv(df_filtered, "H:\\hotspots\\bridges\\bridges_new\\output_data\\hotspots.csv", row.names = FALSE) # Ben path
+#write.csv(df_filtered, "H:\\hotspots\\bridges\\bridges_new\\output_data\\hotspots.csv", row.names = FALSE) # Ben path
 
 # Summarize miles and roadkills per hotspot
 summary_df <- df_filtered %>%
@@ -86,20 +86,32 @@ summary_df <- df_filtered %>%
     num_records = n(),
     mean_annl_nc = mean(annl_nc, na.rm = TRUE)
   ) %>%
-  mutate(length_miles = num_records * 100 / 5280)
+  mutate(
+    length_miles = num_records * 100 / 5280,
+    crossing_sites = ifelse(length_miles <= 2, # put crossing if length is =<2 miles
+                           1, 
+                           ifelse((length_miles / 2) %% 1 < 0.5, # put crossing every 2 miles if length is >2
+                                  floor(length_miles / 2), 
+                                  ceiling(length_miles / 2)))
+)
 
 # Write summary table to Excel
 #write.csv(summary_df, "C:\\Users\\Leo Hecht\\Documents\\Road Ecology\\Hotspot Report\\hotspots_summary.csv", row.names = FALSE) # Leo path
-write.csv(summary_df, "H:\\hotspots\\bridges\\bridges_new\\output_data\\hotspots_summary.csv", row.names = FALSE) # Ben path
+#write.csv(summary_df, "D:\\bridges\\output_data\\hotspots_summary.csv", row.names = FALSE) # Ben path
+
+# Select only new_sequence and crossing_sites
+summary_df_selected <- summary_df %>%
+  select(new_sequence, crossing_sites)
 
 # Select points to represent hotspots on map
 
 # Group by new_sequence and select the first record
 map_hotspots <- df_filtered %>%
+  left_join(summary_df_selected, by = "new_sequence") %>%
   group_by(new_sequence) %>%
   slice(1) %>%  # Select the first record in each group
   ungroup()
 
 # Write mapping points to csv
-write.csv(map_hotspots, "H:\\hotspots\\bridges\\bridges_new\\output_data\\map_hotspots.csv", row.names = FALSE) # Ben path
+#write.csv(map_hotspots, "D:\\bridges\\output_data\\map_hotspots.csv", row.names = FALSE) # Ben path
 
