@@ -26,7 +26,7 @@ for (bridge_idx in bridge_indices) {
   start_idx <- max(1, bridge_idx - bridge_distance)
   df$near_bridge[start_idx:bridge_idx] <- 1
   
-  # Mark points within 1 mile after the bridge
+  # Mark points within 2 miles after the bridge
   end_idx <- min(nrow(df), bridge_idx + bridge_distance)
   df$near_bridge[bridge_idx:end_idx] <- 1
 }
