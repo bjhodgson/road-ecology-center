@@ -5,6 +5,7 @@
 
 
 library(readxl)
+library(dplyr)
 
 # Load the dataset
 points_100ft <- read.csv("C:\\Users\\Leo Hecht\\Documents\\Road Ecology\\Hotspot Report\\output_data\\points_table_fence.csv")
@@ -55,8 +56,10 @@ write.csv(points_100ft, "C:\\Users\\Leo Hecht\\Documents\\Road Ecology\\Hotspot 
 #new
 
 
-# Load the dataset
-points_100ft <- read.csv("C:\\Users\\Leo Hecht\\Documents\\Road Ecology\\Hotspot Report\\output_data\\points_table_fence.csv")
+# Load the wcc_bridges dataset
+#points_100ft <- read.csv("C:\\Users\\Leo Hecht\\Documents\\Road Ecology\\Hotspot Report\\output_data\\points_table_fence.csv") # Leo path
+points_100ft <- read.csv("D:\\hotspots\\fences\\output_data\\wcc_bridges.csv") # Ben path
+
 
 # Create a new column called "fence" and initialize it to 0
 points_100ft$fence <- 0
@@ -77,13 +80,30 @@ for (i in seq_along(bridge_indices)) {
   # Define the next bridge index
   next_bridge_idx <- bridge_indices[i + 1]
   
-  # Check if there is at least one point with annl_nc >= 2 between the bridges
-  if (any(points_100ft$annl_nc[(bridge_idx + 1):(next_bridge_idx - 1)] >= 2)) {
+  # Check if there is at least one point with annl_nc > 2 between the bridges
+  if (any(points_100ft$annl_nc[(bridge_idx + 1):(next_bridge_idx - 1)] > 2)) {
     # Mark points between the current and next bridge
     points_100ft$fence[bridge_idx:next_bridge_idx] <- 1
   }
 }
 
 # Save the edited dataset
-write.csv(points_100ft, "C:\\Users\\Leo Hecht\\Documents\\Road Ecology\\Hotspot Report\\dataset_with_fence_processed.csv", row.names = FALSE)
+#write.csv(points_100ft, "C:\\Users\\Leo Hecht\\Documents\\Road Ecology\\Hotspot Report\\dataset_with_fence_processed.csv", row.names = FALSE) # Leo path
+write.csv(points_100ft, "D:\\hotspots\\fences\\output_data\\hotspot_fences.csv", row.names = FALSE) # Ben path
 
+fences_df <- points_100ft %>%
+  filter(fence == 1) # Select points to fence
+
+write.csv(fences_df, "D:\\hotspots\\fences\\output_data\\fences_df.csv", row.names = FALSE) # Ben path
+
+
+
+# Summarize miles and roadkills per hotspot
+summary_df <- fences_df %>%
+  group_by(new_sequence) %>%
+  summarise(
+    num_records = n(),
+    mean_annl_nc = mean(annl_nc, na.rm = TRUE)
+  ) %>%
+  mutate(
+    length_miles = num_records * 100 / 5280,
