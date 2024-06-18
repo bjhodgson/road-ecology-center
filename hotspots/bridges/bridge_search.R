@@ -101,7 +101,7 @@ summary_df <- df_filtered %>%
 
 # Select only new_sequence and crossing_sites
 summary_df_selected <- summary_df %>%
-  select(new_sequence, crossing_sites)
+  select(new_sequence, mean_annl_nc, crossing_sites)
 
 # Select points to represent hotspots on map
 
@@ -113,5 +113,5 @@ map_hotspots <- df_filtered %>%
   ungroup()
 
 # Write mapping points to csv
-#write.csv(map_hotspots, "D:\\bridges\\output_data\\map_hotspots.csv", row.names = FALSE) # Ben path
+write.csv(map_hotspots, "D:\\bridges\\output_data\\map_hotspots.csv", row.names = FALSE) # Ben path
 
