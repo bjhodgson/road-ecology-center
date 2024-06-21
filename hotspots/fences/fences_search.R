@@ -52,3 +52,138 @@ for (i in 1:nrow(fences_df)) {
 # Output the counts of records above and below the found annl_nc > 2
 print(paste("Records above annl_nc > 2:", count_records_above))
 print(paste("Records below annl_nc > 2 until VCU == 0:", count_records_below))
+
+
+
+# --------------------------
+
+library(dplyr)
+
+# Read the CSV file
+fences_df <- read.csv("D:\\hotspots\\fences\\output_data\\wcc_bridges.csv")
+
+# Find the first occurrence of annl_nc > 2
+index_above <- which(fences_df$annl_nc > 2)[1]
+
+if (!is.na(index_above)) {
+  # Extract the OBJECTID of the first occurrence
+  objectid_first_occurrence <- fences_df$OBJECTID[index_above]
+  
+  # Find the index of the first VCU == 0 above the found index
+  index_vcu_above <- which(fences_df$VCU[1:(index_above-1)] == 0, arr.ind = TRUE)[1]
+  
+  # Find the index of the first VCU == 0 below the found index
+  index_vcu_below <- index_above + which(fences_df$VCU[(index_above+1):nrow(fences_df)] == 0, arr.ind = TRUE)[1]
+  
+  # Output the OBJECTID and indices
+  print(paste("OBJECTID of first occurrence of annl_nc > 2:", objectid_first_occurrence))
+  print(paste("Index of first VCU == 0 above annl_nc > 2:", index_vcu_above))
+  print(paste("Index of first VCU == 0 below annl_nc > 2:", index_vcu_below))
+  
+  # Count records above annl_nc > 2 until VCU == 0
+  records_above <- fences_df[1:(index_above-1), ]
+  count_records_above <- sum(records_above$VCU == 0, na.rm = TRUE)
+  
+  # Count records below annl_nc > 2 until VCU == 0
+  records_below <- fences_df[(index_above+1):nrow(fences_df), ]
+  count_records_below <- sum(cumsum(records_below$VCU == 0) == 0, na.rm = TRUE)
+  
+  # Output the counts of records above and below the found annl_nc > 2
+  print(paste("Records above annl_nc > 2 until VCU == 0:", count_records_above))
+  print(paste("Records below annl_nc > 2 until VCU == 0:", count_records_below))
+} else {
+  print("No records with annl_nc > 2 found")
+}
+
+
+#-----------------------
+
+library(dplyr)
+
+# Read the CSV file
+fences_df <- read.csv("D:\\hotspots\\fences\\output_data\\wcc_bridges.csv")
+
+# Find the first occurrence of annl_nc > 2
+index_above <- which(fences_df$annl_nc > 2)[1]
+
+if (!is.na(index_above)) {
+  # Extract the OBJECTID of the first occurrence
+  objectid_first_occurrence <- fences_df$OBJECTID[index_above]
+  
+  # Find the OBJECTID of the first VCU == 0 above the found index
+  objectid_vcu_above <- fences_df$OBJECTID[which(fences_df$VCU[1:(index_above-1)] == 0, arr.ind = TRUE)[1]]
+  
+  # Find the OBJECTID of the first VCU == 0 below the found index
+  index_vcu_below <- which(fences_df$VCU[(index_above+1):nrow(fences_df)] == 0, arr.ind = TRUE)[1]
+  objectid_vcu_below <- fences_df$OBJECTID[index_above + index_vcu_below]
+  
+  # Count records above annl_nc > 2 until VCU == 0
+  count_records_above <- sum(fences_df$VCU[1:(index_above-1)] == 0, na.rm = TRUE)
+  
+  # Count records below annl_nc > 2 until VCU == 0
+  count_records_below <- sum(cumsum(fences_df$VCU[(index_above+1):nrow(fences_df)] == 0) == 0, na.rm = TRUE)
+  
+  # Output the OBJECTID and counts of records above and below the found annl_nc > 2
+  print(paste("OBJECTID of first occurrence of annl_nc > 2:", objectid_first_occurrence))
+  print(paste("OBJECTID of first VCU == 0 above annl_nc > 2:", objectid_vcu_above))
+  print(paste("OBJECTID of first VCU == 0 below annl_nc > 2:", objectid_vcu_below))
+  print(paste("Records above annl_nc > 2 until VCU == 0:", count_records_above))
+  print(paste("Records below annl_nc > 2 until VCU == 0:", count_records_below))
+} else {
+  print("No records with annl_nc > 2 found")
+}
+
+
+#-------------
+
+library(dplyr)
+
+# Read the CSV file
+fences_df <- read.csv("D:\\hotspots\\fences\\output_data\\wcc_bridges.csv")
+
+# Find the first occurrence of annl_nc > 2
+index_above <- which(fences_df$annl_nc > 2)[1]
+
+if (!is.na(index_above)) {
+  # Extract the OBJECTID of the first occurrence
+  objectid_first_occurrence <- fences_df$OBJECTID[index_above]
+  
+  # Find the closest OBJECTID with VCU == 0 above the found index
+  index_vcu_above <- which(fences_df$VCU[1:(index_above-1)] == 0)
+  if (length(index_vcu_above) > 0) {
+    objectid_vcu_above <- fences_df$OBJECTID[max(index_vcu_above)]
+  } else {
+    objectid_vcu_above <- NA
+  }
+  
+  # Find the closest OBJECTID with VCU == 0 below the found index
+  index_vcu_below <- which(fences_df$VCU[(index_above+1):nrow(fences_df)] == 0)
+  if (length(index_vcu_below) > 0) {
+    objectid_vcu_below <- fences_df$OBJECTID[index_above + min(index_vcu_below)]
+  } else {
+    objectid_vcu_below <- NA
+  }
+  
+  # Count records above annl_nc > 2 until VCU == 0
+  count_records_above <- if (!is.na(objectid_vcu_above)) {
+    sum(fences_df$OBJECTID[1:(index_above-1)] <= fences_df$OBJECTID[max(index_vcu_above)], na.rm = TRUE)
+  } else {
+    0
+  }
+  
+  # Count records below annl_nc > 2 until VCU == 0
+  count_records_below <- if (!is.na(objectid_vcu_below)) {
+    sum(fences_df$OBJECTID[(index_above+1):nrow(fences_df)] <= fences_df$OBJECTID[index_above + min(index_vcu_below)], na.rm = TRUE)
+  } else {
+    0
+  }
+  
+  # Output the OBJECTID and counts of records above and below the found annl_nc > 2
+  print(paste("OBJECTID of first occurrence of annl_nc > 2:", objectid_first_occurrence))
+  print(paste("OBJECTID of closest VCU == 0 above annl_nc > 2:", objectid_vcu_above))
+  print(paste("OBJECTID of closest VCU == 0 below annl_nc > 2:", objectid_vcu_below))
+  print(paste("Records above annl_nc > 2 until VCU == 0:", count_records_above))
+  print(paste("Records below annl_nc > 2 until VCU == 0:", count_records_below))
+} else {
+  print("No records with annl_nc > 2 found")
+}
