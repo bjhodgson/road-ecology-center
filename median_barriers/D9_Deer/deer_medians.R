@@ -3,7 +3,7 @@ library(sf)
 library(readxl)
 
 # Set paths
-shp_file <- "D:\\Median Barriers\\CROS Search\\Output Data\\D9_deer\\d9_deer.shp"
+shp_file <- "D:\\Median Barriers\\CROS Search\\Output Data\\D9_deer_AADT\\d9_deer_AADT.shp"
 excel_file <- "C:\\Users\\HP\\Downloads\\Deer CROS Medians.xlsx"
 
 # Read shp into gdf
@@ -38,3 +38,11 @@ chi_square_test <- chisq.test(freq_table)
 
 # Print the chi-squared test results
 print(chi_square_test)
+
+
+plot(density(joined_gdf$AADT))
+
+model <- glm(roadkill_freq ~ continuous_var + covariate1 + covariate2, family = poisson, data = your_data)
+
+
+reg1 <- lm()
