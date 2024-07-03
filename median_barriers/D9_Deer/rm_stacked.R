@@ -4,6 +4,8 @@ library(readxl)
 library(lubridate)
 library(ggplot2)
 
+setwd("D:\\Median Barriers\\CROS Search\\Output Data\\D9_deer_cleaned")
+
 # Set paths
 shp_file <- "D:\\Median Barriers\\CROS Search\\Output Data\\D9_deer_AADT\\d9_deer_AADT.shp"
 excel_file <- "C:\\Users\\HP\\Downloads\\Deer CROS Medians (3).xlsx"
@@ -53,3 +55,15 @@ sliced_gdf <- grouped_gdf %>%
 # Frequency table of median types
 freq_table <- table(sliced_gdf$MedianType)
 print(freq_table)
+
+# Write cleaned gdf to shapefile
+st_write(sliced_gdf, "D9_deer_medians_cleaned.shp")
+
+
+# Read in GIS cleaned shapefile
+shp_file <- "D:\\Median Barriers\\CROS Search\\Output Data\\D9_deer_medians_hwys\\D9_deer_medians_cleaned_Clip.shp"
+cleaned_gdf <- st_read(shp_file)
+
+freq_table <- table(cleaned_gdf$MednTyp)
+print(freq_table)
+
