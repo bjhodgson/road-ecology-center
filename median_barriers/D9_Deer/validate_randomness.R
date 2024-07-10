@@ -51,25 +51,44 @@ coordinates <- st_coordinates(points2)
 points2$x <- coordinates[,1]
 points2$y <- coordinates[,2]
 
-# Determine the range of x and y coordinates
-xrange <- range(c(points1$x, points2$x))
-yrange <- range(c(points1$y, points2$y))
+# Transform to UTM Zone 10N (EPSG:32610) for spatial analysis
+points1_proj <- st_transform(points1, crs = 32610)
+points2_proj <- st_transform(points2, crs = 32610)
 
-# Define the window to encompass all points
-window <- owin(xrange = xrange, yrange = yrange)
+# Convert to ppp objects
+ppp1 <- as.ppp(points1_proj)
+ppp2 <- as.ppp(points2_proj)
 
-# Convert to ppp objects with the updated window
-ppp1 <- ppp(points1$x, points1$y, window = window)
-ppp2 <- ppp(points2$x, points2$y, window = window)
+# Compute KDEs for both point patterns
+kde1 <- density.ppp(ppp1)
+kde2 <- density.ppp(ppp2)
 
-# Calculate the K-function for both point patterns
-K1 <- Kest(ppp1)
-K2 <- Kest(ppp2)
+# Calculate the difference in KDE values
+kde_diff <- kde1$fhat - kde2$fhat
 
-# Plot the K-functions for visual comparison
-plot(K1, main = "K-function comparison")
-plot(K2, add = TRUE, col = "red")
+# Optionally, perform bootstrap resampling to assess significance
+nboot <- 1000  # Number of bootstrap replicates
+boot_diff <- numeric(nboot)
 
-# Perform a test to compare the K-functions
-test_result <- ks.test(K1, K2)
-print(test_result)
+for (i in 1:nboot) {
+  # Sample with replacement from points1 and points2
+  sample1 <- sample(ppp1, replace = TRUE)
+  sample2 <- sample(ppp2, replace = TRUE)
+  
+  # Compute KDE for each sample
+  kde_sample1 <- density.ppp(sample1)
+  kde_sample2 <- density.ppp(sample2)
+  
+  # Compute difference in KDEs
+  boot_diff[i] <- kde_sample1$fhat - kde_sample2$fhat
+}
+
+# Observed difference in KDEs
+obs_diff <- kde1$fhat - kde2$fhat
+
+# Calculate p-value
+p_value <- sum(abs(boot_diff) >= abs(obs_diff)) / nboot
+
+# Output results
+print(paste("Observed difference in KDEs:", obs_diff))
+print(paste("Bootstrap p-value:", p_value))
