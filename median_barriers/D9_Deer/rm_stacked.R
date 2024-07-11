@@ -57,7 +57,7 @@ freq_table <- table(sliced_gdf$MedianType)
 print(freq_table)
 
 # Write cleaned gdf to shapefile
-st_write(sliced_gdf, "D9_deer_medians_cleaned.shp")
+#st_write(sliced_gdf, "D9_deer_medians_cleaned.shp")
 
 
 # Read in GIS cleaned shapefile
