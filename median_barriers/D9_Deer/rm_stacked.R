@@ -4,11 +4,12 @@ library(readxl)
 library(lubridate)
 library(ggplot2)
 
-setwd("D:\\Median Barriers\\CROS Search\\Output Data\\D9_deer_cleaned")
+# Set output path
+setwd("C:\\Users\\HP\\Documents\\ArcGIS\\Projects\\District 9 Medians\\D9_deer")
 
 # Set paths
-shp_file <- "D:\\Median Barriers\\CROS Search\\Output Data\\D9_deer_AADT\\d9_deer_AADT.shp"
-excel_file <- "C:\\Users\\HP\\Downloads\\Deer CROS Medians (3).xlsx"
+shp_file <- "C:\\Users\\HP\\Documents\\ArcGIS\\Projects\\District 9 Medians\\CROS-CHIPS-20240410-ND-All\\CROS-CHIPS-20240410-ND-All.shp"
+excel_file <- "C:\\Users\\HP\\Downloads\\Deer CROS Medians (4).xlsx"
 
 # Read in Excel sheets
 sheets <- excel_sheets(excel_file)
@@ -57,11 +58,11 @@ freq_table <- table(sliced_gdf$MedianType)
 print(freq_table)
 
 # Write cleaned gdf to shapefile
-#st_write(sliced_gdf, "D9_deer_medians_cleaned.shp")
+st_write(sliced_gdf, "D9_deer_medians.shp")
 
 
 # Read in GIS cleaned shapefile
-shp_file <- "D:\\Median Barriers\\CROS Search\\Output Data\\D9_deer_medians_hwys\\D9_deer_medians_cleaned_Clip.shp"
+shp_file <- "C:\\Users\\HP\\Documents\\ArcGIS\\Projects\\District 9 Medians\\D9_deer\\D9_hwy_deer.shp"
 cleaned_gdf <- st_read(shp_file)
 
 freq_table <- table(cleaned_gdf$MednTyp)

@@ -36,7 +36,7 @@ print(medians_freq)
 
 
 # Set paths
-excel_file <- "C:\\Users\\HP\\Downloads\\Deer CROS Medians (4).xlsx"
+excel_file <- "C:\\Users\\HP\\Downloads\\Coyote CROS Medians.xlsx"
 
 # Read in Excel sheets
 sheets <- excel_sheets(excel_file)
@@ -61,18 +61,14 @@ coyote_df <- bind_rows(data_frames,
   #select(-'Sheet') %>%
   filter(!is.na(MedianType)) # Filter out NA's
 
-# Read in deer shapefile
-shp_file <- "C:\\Users\\HP\\Documents\\ArcGIS\\Projects\\District 9 Medians\\D9_deer\\D9_hwy_deer.shp"
-coyote_df <- st_read(shp_file)
-
 # Frequency table of median types
-coyote_freq <- table(coyote_df$MednTyp)
+coyote_freq <- table(coyote_df$MedianType)
 print(coyote_freq)
 
 
 
 # Assuming 'MedianType' in 'medians_df' contains roadkill data
-roadkill_counts <- table(coyote_df$MednTyp)
+roadkill_counts <- table(coyote_df$MedianType)
 
 # Assuming 'MednTyp' in 'cleaned_gdf' contains random points data
 random_counts <- table(medians_df$MedianType)
@@ -89,28 +85,41 @@ combined_counts %>%
   filter(!Var1 %in% c("overpass (open air)", "temp concrete", "thrie beam and veg"))
 
 # Step 2: Create the contingency table
-contingency_table <- matrix(c(combined_counts$Freq.x, combined_counts$Freq.y), 
+coyote_contingency_table <- matrix(c(combined_counts$Freq.x, combined_counts$Freq.y), 
                             ncol = 2, 
                             byrow = FALSE,
-                            dimnames = list(combined_counts$Var1, c("Roadkill", "Random")))
+                            dimnames = list(combined_counts$Var1, c("Coyote", "Random")))
 
 # Step 3: Perform the Chi-Squared Test
-chi_squared_test <- chisq.test(contingency_table)
+chi_squared_test <- chisq.test(coyote_contingency_table)
 
 # Print the results of the chi-squared test
 print(chi_squared_test)
 
 
-# Chi-Squared Test on No Median / Veg
+# # Chi-Squared Test on No Median / Veg
+# 
+# combined_counts <- combined_counts %>%
+#   filter(Var1 %in% c("no median", "vegetative"))
+# # Step 2: Create the contingency table
+# contingency_table <- matrix(c(combined_counts$Freq.x, combined_counts$Freq.y), 
+#                             ncol = 2, 
+#                             byrow = FALSE,
+#                             dimnames = list(combined_counts$Var1, c("Roadkill", "Random")))
+# # Step 3: Perform the Chi-Squared Test
+# chi_squared_test <- chisq.test(contingency_table)
+# # Print the results of the chi-squared test
+# print(chi_squared_test)
 
-combined_counts <- combined_counts %>%
-  filter(Var1 %in% c("no median", "vegetative"))
-# Step 2: Create the contingency table
-contingency_table <- matrix(c(combined_counts$Freq.x, combined_counts$Freq.y), 
-                            ncol = 2, 
-                            byrow = FALSE,
-                            dimnames = list(combined_counts$Var1, c("Roadkill", "Random")))
-# Step 3: Perform the Chi-Squared Test
-chi_squared_test <- chisq.test(contingency_table)
-# Print the results of the chi-squared test
-print(chi_squared_test)
+coyote_shp <- coyote_df %>%
+  select(!c("Sheet", "grp_nmb")) %>%
+  rename(
+    StreetImageDate = StrtImD,
+    MedianType = MednTyp,
+    SecondaryAttribute = ScndryA,
+    MedianWidth = MdnWdth,
+    RoadsideBarrier = RdsdBrr,
+  ) %>%
+  convert()
+
+st_write(deer_shp, "D9_Deer.shp")

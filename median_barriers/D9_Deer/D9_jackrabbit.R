@@ -36,7 +36,7 @@ print(medians_freq)
 
 
 # Set paths
-excel_file <- "C:\\Users\\HP\\Downloads\\Deer CROS Medians (4).xlsx"
+excel_file <- "C:\\Users\\HP\\Downloads\\Jackrabbit CROS Medians.xlsx"
 
 # Read in Excel sheets
 sheets <- excel_sheets(excel_file)
@@ -56,23 +56,19 @@ data_frames <- lapply(selected_sheets, function(sheet) {
   })
 
 # Combine all data frames into one using bind_rows from dplyr, adding a column for sheet name
-coyote_df <- bind_rows(data_frames, 
+jackrabbit_df <- bind_rows(data_frames, 
                         .id = "Sheet") %>%
   #select(-'Sheet') %>%
   filter(!is.na(MedianType)) # Filter out NA's
 
-# Read in deer shapefile
-shp_file <- "C:\\Users\\HP\\Documents\\ArcGIS\\Projects\\District 9 Medians\\D9_deer\\D9_hwy_deer.shp"
-coyote_df <- st_read(shp_file)
-
 # Frequency table of median types
-coyote_freq <- table(coyote_df$MednTyp)
-print(coyote_freq)
+jackrabbit_freq <- table(jackrabbit_df$MedianType)
+print(jackrabbit_freq)
 
 
 
 # Assuming 'MedianType' in 'medians_df' contains roadkill data
-roadkill_counts <- table(coyote_df$MednTyp)
+roadkill_counts <- table(jackrabbit_df$MedianType)
 
 # Assuming 'MednTyp' in 'cleaned_gdf' contains random points data
 random_counts <- table(medians_df$MedianType)
@@ -89,28 +85,28 @@ combined_counts %>%
   filter(!Var1 %in% c("overpass (open air)", "temp concrete", "thrie beam and veg"))
 
 # Step 2: Create the contingency table
-contingency_table <- matrix(c(combined_counts$Freq.x, combined_counts$Freq.y), 
+jackrabbit_contingency_table <- matrix(c(combined_counts$Freq.x, combined_counts$Freq.y), 
                             ncol = 2, 
                             byrow = FALSE,
-                            dimnames = list(combined_counts$Var1, c("Roadkill", "Random")))
+                            dimnames = list(combined_counts$Var1, c("Jackrabbit", "Random")))
 
 # Step 3: Perform the Chi-Squared Test
-chi_squared_test <- chisq.test(contingency_table)
+chi_squared_test <- chisq.test(jackrabbit_contingency_table)
 
 # Print the results of the chi-squared test
 print(chi_squared_test)
 
 
-# Chi-Squared Test on No Median / Veg
-
-combined_counts <- combined_counts %>%
-  filter(Var1 %in% c("no median", "vegetative"))
-# Step 2: Create the contingency table
-contingency_table <- matrix(c(combined_counts$Freq.x, combined_counts$Freq.y), 
-                            ncol = 2, 
-                            byrow = FALSE,
-                            dimnames = list(combined_counts$Var1, c("Roadkill", "Random")))
-# Step 3: Perform the Chi-Squared Test
-chi_squared_test <- chisq.test(contingency_table)
-# Print the results of the chi-squared test
-print(chi_squared_test)
+# # Chi-Squared Test on No Median / Veg
+# 
+# combined_counts <- combined_counts %>%
+#   filter(Var1 %in% c("no median", "vegetative"))
+# # Step 2: Create the contingency table
+# contingency_table <- matrix(c(combined_counts$Freq.x, combined_counts$Freq.y), 
+#                             ncol = 2, 
+#                             byrow = FALSE,
+#                             dimnames = list(combined_counts$Var1, c("Roadkill", "Random")))
+# # Step 3: Perform the Chi-Squared Test
+# chi_squared_test <- chisq.test(contingency_table)
+# # Print the results of the chi-squared test
+# print(chi_squared_test)
