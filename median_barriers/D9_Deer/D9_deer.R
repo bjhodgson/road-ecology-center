@@ -96,7 +96,7 @@ print(chi_squared_test)
 deer_shp <- deer_df %>%
   select(!c("Sheet", "grp_nmb")) %>%
   rename(
-    StreetImageDate = StrtImD,
+    StreetImageryDate = StrtImD,
     MedianType = MednTyp,
     SecondaryAttribute = ScndryA,
     MedianWidth = MdnWdth,
@@ -105,3 +105,32 @@ deer_shp <- deer_df %>%
   convert()
 
 st_write(deer_shp, "D9_Deer.shp")
+
+
+
+#--------
+# Set paths
+excel_file <- "C:\\Users\\HP\\Downloads\\Deer CROS Medians (4).xlsx"
+
+# Read in Excel sheets
+sheets <- excel_sheets(excel_file)
+# Filter out the sheets you want to exclude
+selected_sheets <- sheets[!sheets %in% c("MedianTypes")]
+
+# Read the selected sheets into a list of data frames
+data_frames <- lapply(selected_sheets, function(sheet) {
+  read_excel(excel_file, sheet = sheet)
+}) %>%
+  lapply(function(df) {
+    df %>% # Convert type to character for binding
+      mutate(StreetImageryDate = as.character(StreetImageryDate)) %>%
+      mutate(StreetImageryDate = parse_date_time(StreetImageryDate, orders = "my")) %>%
+      mutate(StreetImageryDate = as.character(StreetImageryDate))
+    #mutate(StreetImageryDate = format(as.Date(StreetImageryDate, format = "%Y-%m-%d"), "%m/%Y"))
+  })
+
+# Combine all data frames into one using bind_rows from dplyr, adding a column for sheet name
+deer_df <- bind_rows(data_frames, 
+                       .id = "Sheet") %>%
+  #select(-'Sheet') %>%
+  filter(!is.na(MedianType)) # Filter out NA's

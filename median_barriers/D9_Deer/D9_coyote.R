@@ -4,6 +4,8 @@ library(readxl)
 library(lubridate)
 library(ggplot2)
 
+setwd("D:\\Median Barriers\\CROS Search\\District 9 Post-Processing Shapefiles\\D9_Coyote")
+
 # Set paths
 excel_file <- "C:\\Users\\HP\\Downloads\\Untreated Points Medians (3).xlsx"
 
@@ -111,15 +113,30 @@ print(chi_squared_test)
 # # Print the results of the chi-squared test
 # print(chi_squared_test)
 
-coyote_shp <- coyote_df %>%
-  select(!c("Sheet", "grp_nmb")) %>%
-  rename(
-    StreetImageDate = StrtImD,
-    MedianType = MednTyp,
-    SecondaryAttribute = ScndryA,
-    MedianWidth = MdnWdth,
-    RoadsideBarrier = RdsdBrr,
-  ) %>%
-  convert()
 
-st_write(deer_shp, "D9_Deer.shp")
+# Merge shapefile and median data through common NID
+
+shp_path <- "D://Median Barriers//CROS Search//D9 Pre-Processing Shapefiles//D9_coyote_1_145.shp"
+shp_in <- st_read(shp_path)
+
+# Rename common field for merge
+coyote_df <- coyote_df %>%
+  rename(nid = NID)
+
+# Merge based on common field (nid)
+coyote_gdf <- merge(shp_in, coyote_df, by="nid") #%>%
+  mutate(as.integer(CHP))
+
+shp_out <- coyote_gdf %>%
+  select(!c("Sheet", "ORIG_FID")) %>%
+  rename(
+    # StreetImageDate = StrtImD,
+    # MedianType = MednTyp,
+    # SecondaryAttribute = ScndryA,
+    # MedianWidth = MdnWdth,
+    # RoadsideBarrier = RdsdBrr,
+    MedianNotes = Notes
+  ) #%>%
+  mutate(as.integer(coyote_gdf$chps_Cd))
+
+st_write(shp_out, "D9_Coyote.shp", layer_options = "FIELD_WIDTH=15")
