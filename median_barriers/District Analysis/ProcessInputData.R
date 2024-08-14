@@ -21,13 +21,36 @@ for (path in names(files)) {
   process_excel_sheets(path, files[[path]])
 }
 
+# REMOVE STACKED POINTS FROM ALL GDFs
+# # Define the shapefiles and their corresponding names
+# shapefiles <- list(
+#   "D:\\Median Barriers\\D9 Shapefiles\\Mule Deer\\D9_deer_hwys.shp" = "deer_gdf",
+#   "D:\\Median Barriers\\D9 Shapefiles\\Coyote\\D9_coyote_1_145.shp" = "coyote_gdf",
+#   "D:\\Median Barriers\\D9 Shapefiles\\Jackrabbit\\D9_jackrabbit_1_138.shp" = "jackrabbit_gdf"
+#   #"D:\\Median Barriers\\D9 Shapefiles\\Random Points\\random_points.shp" = "random_gdf"
+# )
+# 
+# # Loop through the shapefiles
+# for (shp_path in names(shapefiles)) {
+#   # Read the shapefile
+#   gdf <- st_read(shp_path)
+#   
+#   # Clean the data by removing stacked points
+#   cleaned_gdf <- gdf %>%
+#     group_by(latitude, longitude) %>%
+#     slice(1) %>%
+#     ungroup()
+#   
+#   # Assign the cleaned dataframe to a variable
+#   assign(shapefiles[[shp_path]], cleaned_gdf)
+# }
 
 # Define a list of shapefile paths and corresponding output variables
 shapefiles <- list(
-  "D:\\Median Barriers\\D9 Shapefiles\\Mule Deer\\D9_deer_hwys.shp" = "deer_gdf"
-  # "D:\\Median Barriers\\D9 Shapefiles\\Coyote\\D9_coyote_1_145.shp" = "coyote_gdf",
-  # "D:\\Median Barriers\\D9 Shapefiles\\Jackrabbit\\D9_jackrabbit_1_138.shp" = "jackrabbit_gdf",
-  # "D:\\Median Barriers\\D9 Shapefiles\\Random Points\\random_points.shp" = "random_gdf"
+  "D:\\Median Barriers\\D9 Shapefiles\\Mule Deer\\D9_deer_hwys.shp" = "deer_gdf",
+  "D:\\Median Barriers\\D9 Shapefiles\\Coyote\\D9_coyote_1_145.shp" = "coyote_gdf",
+  "D:\\Median Barriers\\D9 Shapefiles\\Jackrabbit\\D9_jackrabbit_1_138.shp" = "jackrabbit_gdf",
+  "D:\\Median Barriers\\D9 Shapefiles\\Random Points\\random_points.shp" = "random_gdf"
 )
 
 # Loop through the shapefiles and read each one
@@ -36,19 +59,11 @@ for (shp_path in names(shapefiles)) {
 }
 
 
-# Remove stacked points from deer gdf
-# Count occurrences of each latitude and longitude pair
-grouped_deer_gdf <- deer_gdf %>%
-  group_by(latitude, longitude) %>%
-  mutate(group_number = cur_group_id()) %>%
-  ungroup()  
-
-# Slice first record in each group
-cleaned_deer_gdf <- grouped_deer_gdf %>%
+# Remove stacked points from deer_gdf and keep only the first occurrence of each latitude and longitude pair
+deer_gdf <- deer_gdf %>%
   group_by(latitude, longitude) %>%
   slice(1) %>%
-  ungroup() %>%
-  select(!"group_number")
+  ungroup()
 
 # Bind dfs
 df <- bind_rows(coyote_excel, jackrabbit_excel, deer_excel) %>%
@@ -58,24 +73,38 @@ df <- bind_rows(coyote_excel, jackrabbit_excel, deer_excel) %>%
   )
 
 # Bind gdfs
-gdf <- bind_rows(coyote_gdf, jackrabbit_gdf, cleaned_deer_gdf) #%>%
+gdf <- bind_rows(coyote_gdf, jackrabbit_gdf, deer_gdf) #%>%
   select(!ORIG_FID)
   
-# Merge attributes
+# Merge attributes by nid
 merged_gdf <- inner_join(gdf, df, by = "nid") %>%
   select(!"ORIG_FID")
 
-# Write merged gdf to shp
-out_path <- "D:\\Median Barriers\\D9 Shapefiles\\Combined Dataset\\D9_CROS_Medians.shp"
-st_write(merged_gdf, out_path)
-  
-# Bind random excel to random gdf
-merged_random_gdf <- inner_join(random_gdf, random_excel, by = "CID") %>%
-  select(!c("LATITUDE", "LONGITUDE", "Sheet")) %>%
-  rename(MedianNotes = Notes,
-         FID = CID
-  )
-  
-# Write random merged gdf to shp  
-out_path <- "D:\\Median Barriers\\D9 Shapefiles\\Random Points\\D9_Random_Medians.shp"
-st_write(merged_random_gdf, out_path)  
+# Filter gdf for observation dates after Jan 1, 2015
+gdf$observatio <- as.POSIXct(gdf$observatio, format = "%Y/%m/%d %H:%M:%S") # Convert data type to date
+filtered_gdf <- gdf %>%
+  filter(observatio >= as.POSIXct("2015-01-01 00:00:00"))
+
+# PROBLEM: conditions (on highways, remove stacked points, Jan 1, 2015-present) reduce sample size down to 533 (433 deer), lower if remove stacked points from all species)
+
+
+
+
+
+
+
+# # Write merged gdf to shp
+# out_path <- "D:\\Median Barriers\\D9 Shapefiles\\Combined Dataset\\D9_CROS_Medians.shp"
+# st_write(merged_gdf, out_path)
+#   
+# # Bind random excel to random gdf
+# merged_random_gdf <- inner_join(random_gdf, random_excel, by = "CID") %>%
+#   select(!c("LATITUDE", "LONGITUDE", "Sheet")) %>%
+#   rename(MedianNotes = Notes,
+#          FID = CID
+#   )
+#   
+# # Write random merged gdf to shp  
+# out_path <- "D:\\Median Barriers\\D9 Shapefiles\\Random Points\\D9_Random_Medians.shp"
+# st_write(merged_random_gdf, out_path)  
+
