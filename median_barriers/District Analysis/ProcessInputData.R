@@ -7,25 +7,15 @@ file_dir <- "C:\\Users\\HP\\Downloads" # Set pathway to folder containing input 
 shp_dir <- "D:\\Median Barriers\\D9 Shapefiles" # Set pathway to folder containing input shapefile data
 script_dir <- "C://Users//HP//Documents//GitHub//road-ecology-center//median_barriers//District Analysis" # Set path to folder containing RScripts
 
+# PROCESS EXCEL FILES
+
 # Define list of Excel file names and corresponding output names
-setwd(file_dir)
+setwd(file_dir) # Set working directory to folder containing Excel files
 files <- list(
   "Deer CROS Medians (6).xlsx" = "deer_excel",
   "Coyote CROS Medians (2).xlsx" = "coyote_excel",
   "Jackrabbit CROS Medians (2).xlsx" = "jackrabbit_excel",
   "D9 Untreated Points Medians.xlsx" = "random_excel"
-)
-
-# Set pathway to folder containing input shapefile data
-#setwd("D:\\Median Barriers\\D9 Shapefiles")
-
-# Define the shapefiles and their corresponding names
-setwd(shp_dir)
-shapefiles <- list(
-  "Mule Deer\\D9_deer_hwys.shp" = "deer_gdf",
-  "Coyote\\D9_coyote_1_145.shp" = "coyote_gdf",
-  "Jackrabbit\\D9_jackrabbit_1_138.shp" = "jackrabbit_gdf",
-  "Random Points\\random_points.shp" = "random_gdf"
 )
 
 # Set path to function to process Excel files from Rscript file
@@ -34,12 +24,24 @@ function_path <- file.path(script_dir, "FunctionProcessXLSX.R")
 source(function_path)
 
 # Loop through the files and process each one
-setwd(file_dir)
+setwd(file_dir) # Set working directory to folder containing Excel files
 for (path in names(files)) {
   process_excel_sheets(path, files[[path]])
 }
 
+# PROCESS SHAPEFILES
+
+# Define the shapefiles and their corresponding names
+setwd(shp_dir) # Set working directory to folder containing shapefiles
+shapefiles <- list(
+  "Mule Deer\\D9_deer_hwys.shp" = "deer_gdf",
+  "Coyote\\D9_coyote_1_145.shp" = "coyote_gdf",
+  "Jackrabbit\\D9_jackrabbit_1_138.shp" = "jackrabbit_gdf",
+  "Random Points\\random_points.shp" = "random_gdf"
+)
+
 # Loop through the shapefiles and process each one
+setwd(shp_dir)  # Set working directory to folder containing shapefiles
 for (shp_path in names(shapefiles)[1:3]) {
   # Read the shapefile
   gdf <- st_read(shp_path)
