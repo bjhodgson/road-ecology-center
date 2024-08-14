@@ -56,32 +56,11 @@ for (shp_path in names(shapefiles)[1:3]) {
   assign(shapefiles[[shp_path]], cleaned_gdf)
 }
 
+# Process random points shapefile
+random_gdf <- st_read(names(shapefiles[4]))
 
 
-# #REMOVE STACKED POINTS FROM ALL GDFs
-# # Define the shapefiles and their corresponding names
-# shapefiles <- list(
-#   "D:\\Median Barriers\\D9 Shapefiles\\Mule Deer\\D9_deer_hwys.shp" = "deer_gdf",
-#   "D:\\Median Barriers\\D9 Shapefiles\\Coyote\\D9_coyote_1_145.shp" = "coyote_gdf",
-#   "D:\\Median Barriers\\D9 Shapefiles\\Jackrabbit\\D9_jackrabbit_1_138.shp" = "jackrabbit_gdf"
-#   #"D:\\Median Barriers\\D9 Shapefiles\\Random Points\\random_points.shp" = "random_gdf"
-# )
-# 
-# # Loop through the shapefiles
-# for (shp_path in names(shapefiles)) {
-#   # Read the shapefile
-#   gdf <- st_read(shp_path)
-# 
-#   # Clean the data by removing stacked points
-#   cleaned_gdf <- gdf %>%
-#     group_by(latitude, longitude, observatio) %>% # Group by same location and observation date
-#     slice(1) %>%
-#     ungroup()
-# 
-#   # Assign the cleaned dataframe to a variable
-#   assign(shapefiles[[shp_path]], cleaned_gdf)
-# }
-
+# WRANGLE AND MERGE DATAFRAMES
 
 # Bind dfs
 df <- bind_rows(coyote_excel, jackrabbit_excel, deer_excel) %>%
@@ -91,31 +70,30 @@ df <- bind_rows(coyote_excel, jackrabbit_excel, deer_excel) %>%
   )
 
 # Bind gdfs
-gdf <- bind_rows(coyote_gdf, jackrabbit_gdf, deer_gdf) #%>%
-  #select(!"ORIG_FID")
+gdf <- bind_rows(coyote_gdf, jackrabbit_gdf, deer_gdf) %>%
+  select(!"ORIG_FID")
   
 # Merge attributes by nid
 merged_gdf <- inner_join(gdf, df, by = "nid") #%>%
   #select(!"ORIG_FID")
+
+#nid <- gdf$nid[!gdf$nid %in% df$nid]
 
 sum(merged_gdf$animal == "Mule (or Black tailed) Deer") # 1386 vs 8077 (all stacked)
 sum(merged_gdf$animal == "Coyote") # 132 vs 132 (all stacked)
 sum(merged_gdf$animal == "Black-Tailed Jackrabbit") # 138 vs 138 (all stacked)
 
 
-# Filter gdf for observation dates after Jan 1, 2015
-gdf$observatio <- as.POSIXct(gdf$observatio, format = "%Y/%m/%d %H:%M:%S") # Convert data type to date
-filtered_gdf <- gdf %>%
+# Filter merged_gdf for observation dates after Jan 1, 2015
+merged_gdf$observatio <- as.POSIXct(merged_gdf$observatio, format = "%Y/%m/%d %H:%M:%S") # Convert data type to date
+filtered_gdf <- merged_gdf %>%
   filter(observatio >= as.POSIXct("2015-01-01 00:00:00"))
 
 sum(filtered_gdf$animal == "Mule (or Black tailed) Deer") # 433 vs 1114 (all stacked)
 sum(filtered_gdf$animal == "Coyote") # 90 vs 99 (all stacked)
 sum(filtered_gdf$animal == "Black-Tailed Jackrabbit") # 21 vs 21 (all stacked)
 
-# PROBLEM: conditions (on highways, remove stacked points, Jan 1, 2015-present) reduce sample size down to 533 (433 deer), lower if remove stacked points from all species)
-
 # Filter by WVC observations
-
 WVC_gdf <- filtered_gdf %>%
   filter(condition %in% c("Injured", "Dead"))
 
@@ -123,28 +101,9 @@ sum(WVC_gdf$animal == "Mule (or Black tailed) Deer") # 433 vs 1114 (all stacked)
 sum(WVC_gdf$animal == "Coyote") # 90 vs 99 (all stacked)
 sum(WVC_gdf$animal == "Black-Tailed Jackrabbit") # 21 vs 21 (all stacked)
 
-
-# Read in random points shapefile to gdf
-random_gdf <- st_read()
-
 # Bind random excel to random gdf
 merged_random_gdf <- inner_join(random_gdf, random_excel, by = "CID") %>%
   select(!c("LATITUDE", "LONGITUDE", "Sheet")) %>%
   rename(MedianNotes = Notes,
          FID = CID
   )
-
-
-
-
-
-# # Write merged gdf to shp
-# out_path <- "D:\\Median Barriers\\D9 Shapefiles\\Combined Dataset\\D9_CROS_Medians.shp"
-# st_write(merged_gdf, out_path)
-#   
-
-
-# # Write random merged gdf to shp  
-# out_path <- "D:\\Median Barriers\\D9 Shapefiles\\Random Points\\D9_Random_Medians.shp"
-# st_write(merged_random_gdf, out_path)  
-
