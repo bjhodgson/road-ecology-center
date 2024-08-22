@@ -59,22 +59,16 @@ merge_segment_df <- segment_count %>%
 
 # Prepare CROS data for merge
 merge_cros_df <- grouped_cros_df %>%
-  filter(!MedianType == "transition") %>% # Remove "transition" records
+  filter(MedianType != "transition") %>% # Remove "transition" records
   group_by(Pair_Name, Pair_Type) %>%
   summarise(
-    MedianType_A = first(MedianType),
-    MedianType_B = if_else(n_distinct(MedianType) > 1, last(MedianType), NA_character_),
-    Hits_A = sum(n[MedianType == first(MedianType)], na.rm = TRUE),
-    Hits_B = case_when(
-      n_distinct(MedianType) > 1 ~ sum(n[MedianType == last(MedianType)]),
-      TRUE ~ NA_real_
-    ),
+    MedianType_A = strsplit(Pair_Type, "/")[[1]][1],
+    MedianType_B = strsplit(Pair_Type, "/")[[1]][2],
+    Hits_A = sum(n[MedianType == strsplit(Pair_Type, "/")[[1]][1]], na.rm = TRUE),
+    Hits_B = sum(n[MedianType == strsplit(Pair_Type, "/")[[1]][2]], na.rm = TRUE),
+    .groups = 'drop'  # Ungroup after summarizing
   ) %>%
   mutate(
-    MedianType_B = if_else(is.na(MedianType_B),
-                           gsub(paste0(MedianType_A, "/"), "", Pair_Type),
-                           MedianType_B),
-    MedianType_B = gsub("/", "", MedianType_B),  # Remove "/" from MedianType_B
     Hits_B = if_else(is.na(Hits_B), 0, Hits_B)  # Ensure Hits_B is 0 when no full pair
   )
 
@@ -87,16 +81,16 @@ merged_df <- merge(merge_cros_df, merge_segment_df,
     HitsPer1km_B = Hits_B / Distance1km_B
   )
 
-# Step #: Compare WVC counts within each pair
+# STEP 2: Compare WVC counts within each pair
 
-# Perform paired t-test or Wilcoxon signed-rank test
+# Perform paired t-test (parametric) or Wilcoxon signed-rank test (non-parametric)
 t_test_result <- t.test(merged_df$HitsPer1km_A, merged_df$HitsPer1km_B, paired = TRUE)
 print(t_test_result)
 
 wilcox_test_result <- wilcox.test(merged_df$HitsPer1km_A, merged_df$HitsPer1km_B, paired = TRUE)
 print(wilcox_test_result)
 
-# Step #: Compare aggregate counts across all pairs by median type
+# STEP 3: Compare aggregate counts across all pairs by median type
 
 # Reshape data for independent testing
 aggregated_df <- merged_df %>%
@@ -108,7 +102,7 @@ aggregated_df <- merged_df %>%
   group_by(MedianType) %>%
   summarise(Aggregated_HitsPer1km = sum(HitsPer1km, na.rm = TRUE))
 
-# Perform Kruskal-Wallis test
+# Perform Kruskal-Wallis test (non-parametric)
 kruskal_test_result <- kruskal.test(Aggregated_HitsPer1km ~ MedianType, data = aggregated_df)
 print(kruskal_test_result)
 

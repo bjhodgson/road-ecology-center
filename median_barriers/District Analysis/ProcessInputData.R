@@ -12,10 +12,10 @@ script_dir <- "C://Users//HP//Documents//GitHub//road-ecology-center//median_bar
 # Define list of Excel file names and corresponding output names
 setwd(file_dir) # Set working directory to folder containing Excel files
 files <- list(
-  "Deer CROS Medians (6).xlsx" = "deer_excel",
+  "D9 Deer CROS Medians (6).xlsx" = "deer_excel",
   "Coyote CROS Medians (2).xlsx" = "coyote_excel",
   "Jackrabbit CROS Medians (2).xlsx" = "jackrabbit_excel",
-  "D9 Untreated Points Medians.xlsx" = "random_excel"
+  "D9 Untreated Points Medians (6).xlsx" = "random_excel"
 )
 
 # Set path to function to process Excel files from Rscript file
@@ -95,7 +95,8 @@ sum(filtered_gdf$animal == "Black-Tailed Jackrabbit") # 21 vs 21 (all stacked)
 
 # Filter by WVC observations
 WVC_gdf <- filtered_gdf %>%
-  filter(condition %in% c("Injured", "Dead"))
+  filter(condition %in% c("Injured", "Dead") |
+    chips_An_1 %in% c("Fatality, result of collision", "Fatality, result of dispatch", "Injury"))
 
 sum(WVC_gdf$animal == "Mule (or Black tailed) Deer") # 433 vs 1114 (all stacked)
 sum(WVC_gdf$animal == "Coyote") # 90 vs 99 (all stacked)
