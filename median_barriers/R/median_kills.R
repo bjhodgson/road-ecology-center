@@ -12,7 +12,7 @@ list_excel_files <- function(directory) {
 }
 
 # Specify the path to your folder containing Excel files
-directory_path <- "D:\\Documents\\road-ecology-center\\median_barriers\\CROS_medians_dataset"
+directory_path <- "C:\\Users\\HP\\Documents\\GitHub\\road-ecology-center\\median_barriers\\CROS_medians_dataset"
 
 # Get a list of Excel files from the directory
 file_list <- list_excel_files(directory_path)

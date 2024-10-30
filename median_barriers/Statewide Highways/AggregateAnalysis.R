@@ -2,6 +2,7 @@
 library(dplyr)
 library(lubridate)
 library(tidyr)
+library(ggplot2)
 
 script_dir <- "C:\\Users\\HP\\Documents\\GitHub\\road-ecology-center\\median_barriers\\Statewide Highways"
 source(file.path(script_dir, "ProcessMedianData.R"))
@@ -40,11 +41,33 @@ summarized_df <- merge(summarized_cros_df, summarized_segments_df, by = c("Pair_
 summarized_df <- summarized_df %>%
   mutate(HitsPer100m = TotalHits / Distance100m) %>%
   mutate(Distance1km = Distance100m*100 / 1000) %>%
-  mutate(HitsPer1km = TotalHits / Distance1km)
+  mutate(HitsPer1km = TotalHits / Distance1km) %>%
+  filter(!Pair_Type == "vegetative/vegetative")
 
 #print(summarized_df[,c(1,2,7)])
 
+ggplot(summarized_df, aes(x = Pair_Type, y = TotalHits, fill = MedianType)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  facet_wrap(~ Pair_Type) +
+  theme_minimal() +
+  labs(title = "Total Hits by Pair Type", x = "Pair Type", y = "Total Hits") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+# Create the bar chart
+ggplot(summarized_df, aes(x = MedianType, y = TotalHits, fill = MedianType)) +
+  geom_bar(stat = "identity") +
+  facet_grid(~ Pair_Type, scales = "free_x", space = "free") +
+  theme_minimal() +
+  labs(title = "Total Hits by Pair Type", x = "Median Type", y = "Total Hits") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        strip.text.x = element_text(size = 8, face = "bold"))
+
 # Perform Kruskal-Wallis Test (non-parametric)
-kruskal_result <- kruskal.test(HitsPer100m ~ MedianType, data = summarized_df)
+kruskal_result <- kruskal.test(HitsPer100m ~ MedianType, data = summarized_df) # make sure right var
 print(kruskal_result)
 
+dist(summarized_df$HitsPer100m)
+
+
+anova_result <- aov(HitsPer1km ~ Pair_Type, data = summarized_df)
+summary(anova_result)

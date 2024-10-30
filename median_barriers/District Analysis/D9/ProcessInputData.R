@@ -73,6 +73,10 @@ all_removed_records <- bind_rows(removed_records)
 # View or save the removed records
 all_removed_records
 
+all_removed_records$observatio <- as.POSIXct(all_removed_records$observatio, format = "%Y/%m/%d %H:%M:%S") # Convert data type to date
+all_removed_records <- all_removed_records %>%
+  filter(observatio >= as.POSIXct("2015-01-01 00:00:00"))
+
 
 # Process random points shapefile
 random_gdf <- st_read(names(shapefiles[4]))
@@ -80,15 +84,15 @@ random_gdf <- st_read(names(shapefiles[4]))
 
 # WRANGLE AND MERGE DATAFRAMES
 
-# Bind dfs
-df <- bind_rows(coyote_excel, jackrabbit_excel, deer_excel) %>%
+# Bind dfs (outdated, for multiple species)
+df <- bind_rows(deer_excel) %>%
   select(!Sheet) %>%
   rename(MedianNotes = Notes,
          nid = NID
   )
 
-# Bind gdfs
-gdf <- bind_rows(coyote_gdf, jackrabbit_gdf, deer_gdf) 
+# Bind gdfs (outdated, for multiple species)
+gdf <- bind_rows(deer_gdf) 
   
 # Merge attributes by nid
 merged_gdf <- inner_join(gdf, df, by = "nid") #%>%

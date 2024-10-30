@@ -25,41 +25,6 @@ read_xlsx_file <- function(file) {
 # Read all the CROS.xlsx files and store them in a list
 cros_list <- lapply(cros_files, read_xlsx_file)
 
-###  Determine lost Pair_IDs
-# # Loop through the cros_list to print unique Pair_IDs for each dataframe
-# for (i in seq_along(cros_list)) {
-#   # Check if the dataframe is not NULL and contains the Pair_ID column
-#   if (!is.null(cros_list[[i]]) && "Pair_ID" %in% colnames(cros_list[[i]])) {
-#     cat("Unique Pair_IDs in dataframe", i, ":\n")
-#     print(length(unique(cros_list[[i]]$Pair_ID)))
-#     cat("\n")
-#   } else {
-#     cat("Pair_ID column not found or dataframe is NULL in dataframe", i, "\n\n")
-#   }
-# }
-
-# Initialize an empty vector to store all unique Pair_IDs
-# all_pair_ids <- character()
-# 
-# # Loop through the cros_list to extract unique Pair_IDs
-# for (i in seq_along(cros_list)) {
-#   if (!is.null(cros_list[[i]]) && "Pair_ID" %in% colnames(cros_list[[i]])) {
-#     # Extract unique Pair_IDs and append to the all_pair_ids vector
-#     all_pair_ids <- c(all_pair_ids, unique(cros_list[[i]]$Pair_ID))
-#   }
-# }
-# 
-# # Count the occurrences of each Pair_ID
-# pair_id_counts <- table(all_pair_ids)
-# 
-# # Convert to a dataframe for easier viewing
-# pair_id_summary <- as.data.frame(pair_id_counts)
-# colnames(pair_id_summary) <- c("Pair_ID", "Count")
-# 
-# # Print the summary
-# print(pair_id_summary)
-###
-
 # Remove any NULL entries (in case some files failed to read)
 cros_list <- Filter(Negate(is.null), cros_list)
 
@@ -128,30 +93,49 @@ cros_df <- cros_df %>%
 cros_df <- cros_df %>%
   filter(observatio >= as.POSIXct("2015-01-01 00:00:00")) %>% # Filter by date: (Jan 1, 2015 - April 2024)
   filter(chips_An_1 %in% c("Fatality, result of collision", "Fatality, result of dispatch", "Injury") |
-           condition %in% c("Dead", "Injured") )  # Filter by WVCs
- # filter(animal == "Mule (or Black tailed) Deer") # Filter by species
+           condition %in% c("Dead", "Injured"))  # Filter by WVCs
+  # filter(animal == "Mule (or Black tailed) Deer") # Filter by species
 #   #filter(animal == "Black Bear")
 #   #group_by(animal) %>%
-  #count(animal)
+#count(animal)
 
 
-# Read in highway segments Excel files
+# Read in highway segments csv files
+
+# List all .csv files in the directory and subdirectories
+csv_files <- list.files(data_dir, pattern = "\\.csv$", full.names = TRUE, recursive = TRUE)
 
 # Filter the list to include only files that do NOT end with "CROS.xlsx"
-segments_list <- xlsx_files[!grepl("CROS\\.xlsx$", xlsx_files)]
+segments_list <- csv_files[grepl("Segments\\.csv$", csv_files)]
 
-# Read all the non-CROS.xlsx files and store them in a list
-segments_list <- lapply(segments_list, read_xlsx_file)
+# Function to read each Excel file
+read_csv_file <- function(file) {
+  tryCatch({
+    # Read the file
+    data <- read.csv(file)
+    return(data)
+  }, error = function(e) {
+    cat("Error reading file:", file, "\nError message:", e$message, "\n")
+    return(NULL)
+  })
+}
+
+# Read all the .csv files and store them in a list
+segments_list <- lapply(segments_list, read_csv_file)
 
 # Remove any NULL entries (in case some files failed to read)
 segments_list <- Filter(Negate(is.null), segments_list)
 
 # Ensure consistent data types for specific columns after reading all data
 segments_list <- lapply(segments_list, function(df) {
+  # Convert "Highway_SR" column to character if it exists
   if ("Highway_SR" %in% names(df)) {
     df$Highway_SR <- as.character(df$Highway_SR)
   }
-  # Add other column conversions if needed
+  # Convert "Median_wid" column to character if it exists
+  if ("Median_wid" %in% names(df)) {
+    df$Median_wid <- as.character(df$Median_wid)
+  }
   return(df)
 })
 
@@ -193,22 +177,6 @@ segments_df <- segments_df %>%
   )) %>%
   filter(!Pair_ID %in% c("106")) # Median type not consistent across entire transect
 
-
-unique_values_list <- lapply(segments_list, function(df) {
-  if ("Highway_SR" %in% names(df)) {
-    unique(df$Highway_SR)
-  } else {
-    NULL
-  }
-})
-
-# Print unique values from each dataframe
-print(unique_values_list)
-
-
-
-
-
 # Count segment distance by unique record
 segment_count <- segments_df %>%
   group_by(Pair_Name, Pair_Type, Primary_Me) %>%
@@ -221,93 +189,5 @@ grouped_cros_df <- cros_df %>%
   count(MedianType) %>% 
   filter(!MedianType %in% c("transition"))
 #        !n <= 5)
- 
-
-# distance_df <- segments_df %>% 
-#   group_by(Pair_ID, Pair_Name, Highway_SR) %>%
-#   count(Primary_Me)
-# 
-# distance_df <- segments_df %>% 
-#   group_by(Pair_ID) %>%
-#   count(Primary_Me)
-# 
-# type_count <- cros_df %>%
-#   group_by(Pair_Type) %>%
-#   count(Pair_Type)
-
-#type_diff <- segment_count$Pair_Type[!segment_count$Pair_Type %in% type_count$Pair_Type]
 
 
-# Define the data directory and list all .xlsx files
-data_dir <- "D:/Median Barriers/Statewide Highways/Data Outputs"
-xlsx_files <- list.files(data_dir, pattern = "\\.xlsx$", full.names = TRUE, recursive = TRUE)
-
-# Filter the list to include only files that do NOT end with "CROS.xlsx"
-segments_files <- xlsx_files[!grepl("CROS\\.xlsx$", xlsx_files)]
-
-# Read all the non-CROS.xlsx files and store them in a list
-segments_list <- lapply(segments_files, read_xlsx_file)
-
-# Assign filenames to dataframes in segments_list
-names(segments_list) <- basename(segments_files)
-
-# Print the index and filename for each dataframe in segments_list
-for (i in seq_along(segments_list)) {
-  cat("Index:", i, "Filename:", names(segments_list)[i], "\n")
-}
-
-
-#---------
-
-
-# Filter the list to include only files that end with "Segments.xlsx"
-segments_files <- xlsx_files[grep("Segments\\.xlsx$", xlsx_files)]
-
-# Function to read each Excel file
-read_xlsx_file <- function(file) {
-  tryCatch({
-    # Read the file
-    data <- read_excel(file)
-    return(data)
-  }, error = function(e) {
-    cat("Error reading file:", file, "\nError message:", e$message, "\n")
-    return(NULL)
-  })
-}
-
-# Read all the CROS.xlsx files and store them in a list
-segments_list <- lapply(segments_files, read_xlsx_file)
-
-length(segments_list)
-
-test = read_xlsx("D:\\Median Barriers\\Statewide Highways\\Data Outputs\\US101\\US101_Segments - Copy.xlsx")
-df <- read_xlsx("D:\\Median Barriers\\Statewide Highways\\Data Outputs\\US101\\US101_Segments - Copy.xlsx", n_max = 1)
-col_names <- colnames(df)
-
-column_types <- list(
-  "Pair_Name" = "text",
-  "Valid_Pair" = "text",
-  "Highway_SR" = "text", 
-  "Pair_ID" = "text",    
-  "Transect_I" = "text", 
-  "Pair_Type" = "text",
-  "Primary_Me" = "text", 
-  "Median_wid" = "text", 
-  "Secondary_" = "text"
-)
-
-# Convert columns based on the mapping
-for (col in names(column_types)) {
-  if (column_types[[col]] == "text") {
-    test[[col]] <- as.character(test[[col]])
-  } else if (column_types[[col]] == "numeric") {
-    test[[col]] <- as.numeric(test[[col]])
-  } else if (column_types[[col]] == "logical") {
-    test[[col]] <- as.logical(test[[col]])
-  }
-}
-
-
-test = read.csv("D:\\Median Barriers\\Statewide Highways\\Data Outputs\\SR395\\SR395_Segments.csv")
-
-test1 = read.csv("D:\\Median Barriers\\Statewide Highways\\Data Outputs\\I5\\I5_Segments.csv")

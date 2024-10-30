@@ -1,9 +1,10 @@
 library(dplyr)
 library(lubridate)
 library(tidyr)
+library(ggplot2)
 
 # Set paths to data directories
-script_dir <- "C://Users//HP//Documents//GitHub//road-ecology-center//median_barriers//District Analysis" # Set path to folder containing RScripts
+script_dir <- "C://Users//HP//Documents//GitHub//road-ecology-center//median_barriers//District Analysis//D9" # Set path to folder containing RScripts
 # Pull objects from data processing script
 source(file.path(script_dir, "ProcessInputData.R"))
 
@@ -12,14 +13,14 @@ source(file.path(script_dir, "ProcessInputData.R"))
 # DATA PREP FOR ANALYSIS
 
 # Categorize vegetative medians by vegetation type
-WVC_gdf <- WVC_gdf %>% 
-  filter(animal == "Mule (or Black tailed) Deer") %>% # Filter by animal
-  mutate(MedianType = case_when(
-    MedianType == "vegetative" & grepl("grass", SecondaryAttribute) ~ paste0(MedianType, " (grass)"),
-    MedianType == "vegetative" & grepl("sparse shrubs/trees", SecondaryAttribute) ~ paste0(MedianType, " (sparse shrubs/trees)"),
-    MedianType == "vegetative" & grepl("dense trees", SecondaryAttribute) ~ paste0(MedianType, " (dense shrubs/trees)"),
-    TRUE ~ MedianType
-  ))
+# WVC_gdf <- WVC_gdf %>%
+#   filter(animal == "Mule (or Black tailed) Deer") %>% # Filter by animal
+#   mutate(MedianType = case_when(
+#     MedianType == "vegetative" & grepl("grass", SecondaryAttribute) ~ paste0(MedianType, " (grass)"),
+#     MedianType == "vegetative" & grepl("sparse shrubs/trees", SecondaryAttribute) ~ paste0(MedianType, " (sparse shrubs/trees)"),
+#     MedianType == "vegetative" & grepl("dense trees", SecondaryAttribute) ~ paste0(MedianType, " (dense shrubs/trees)"),
+#     TRUE ~ MedianType
+#   ))
 
 # Summarize WVC counts by median type
 WVC_counts <- WVC_gdf %>%
@@ -37,14 +38,14 @@ WVC_counts <- WVC_gdf %>%
 print(sum(WVC_counts$Count))
 
 # Categorize vegetative medians by vegetation type
-merged_random_gdf <- merged_random_gdf %>% 
-  mutate(MedianType = case_when(
-    MedianType == "vegetative" & grepl("grass", SecondaryAttribute) ~ paste0(MedianType, " (grass)"),
-    MedianType == "vegetative" & grepl("sparse shrubs/trees", SecondaryAttribute) ~ paste0(MedianType, " (sparse shrubs/trees)"),
-    MedianType == "vegetative" & grepl("dense trees", SecondaryAttribute) ~ paste0(MedianType, " (dense shrubs/trees)"),
-    MedianType == "vegetative" & grepl("dense shrubs/trees", SecondaryAttribute) ~ paste0(MedianType, " (dense shrubs/trees)"),
-    TRUE ~ MedianType
-  ))
+# merged_random_gdf <- merged_random_gdf %>%
+#   mutate(MedianType = case_when(
+#     MedianType == "vegetative" & grepl("grass", SecondaryAttribute) ~ paste0(MedianType, " (grass)"),
+#     MedianType == "vegetative" & grepl("sparse shrubs/trees", SecondaryAttribute) ~ paste0(MedianType, " (sparse shrubs/trees)"),
+#     MedianType == "vegetative" & grepl("dense trees", SecondaryAttribute) ~ paste0(MedianType, " (dense shrubs/trees)"),
+#     MedianType == "vegetative" & grepl("dense shrubs/trees", SecondaryAttribute) ~ paste0(MedianType, " (dense shrubs/trees)"),
+#     TRUE ~ MedianType
+#   ))
 
 # # Check if any "vegetative" remains uncategorized
 # uncategorized_vegetative <- merged_random_gdf %>%
@@ -58,7 +59,7 @@ merged_random_gdf <- merged_random_gdf %>%
 # Summarize random point counts by median type
 set.seed(123)  # Set a seed for reproducibility
 random_counts <- merged_random_gdf %>%
-  slice_sample(n = 1100) %>%
+  slice_sample(n = 1069) %>%
   as.data.frame() %>%
   mutate(MedianType = case_when( # Standardize values
     MedianType == "vegetative, thrie beam" ~ "thrie beam", # Change to thrie beam, otherwise count too low
@@ -72,12 +73,14 @@ random_counts <- merged_random_gdf %>%
   rename(Count = n)  # Rename the count column to "Count"
 print(sum(random_counts$Count))
 
+# random_counts <- random_counts %>%
+#   filter(!MedianType == "vegetative, cable")
+
 # Create contingency table for chi-square test
 contingency_table <- matrix(c(WVC_counts$Count, random_counts$Count), 
                             ncol = 2, 
                             byrow = FALSE,
                             dimnames = list(WVC_counts$MedianType, c("Roadkill", "Random")))
-
 
 # ANALYSIS
 
@@ -87,7 +90,8 @@ contingency_table <- matrix(c(WVC_counts$Count, random_counts$Count),
 total_observed <- sum(WVC_counts$Count)
 total_expected <- sum(random_counts$Count)
 
-# Calculate proportions in the Random group
+# Calculate proportions
+observed_proportions <- WVC_counts$Count / total_observed
 expected_proportions <- random_counts$Count / total_expected
 
 # Perform Chi-Square Goodness of Fit Test
@@ -95,6 +99,17 @@ chisq_test <- chisq.test(WVC_counts$Count, p = expected_proportions)
 print(chisq_test)
 
 
+# Write contingency table w/ proportions to csv
+contingency_table <- contingency_table %>%
+  cbind(observed_proportions, expected_proportions)
+#write.csv(contingency_table, file.path(file_dir, "D9_deer_hits_chisq.csv"))
+
+
+chisq_test <- chisq.test(WVC_counts$Count, p = expected_proportions, simulate.p.value = TRUE, B = 2000)
+print(chisq_test) # w/ monte carlo
+
+
+# do series of one tailed t tests for each combo
 
 
 # Perform chi-square test for independence
@@ -105,6 +120,26 @@ print(chisq.test(contingency_table))
 # Perform Fisher Exact Test with simulated p-values
 fisher_result <- fisher.test(contingency_table, simulate.p.value = TRUE, B = 1e5) # Simulate to reduce computational requirements
 print(fisher_result)
+
+
+
+
+df <- merge(WVC_counts, random_counts, by="MedianType") %>%
+  mutate(
+    WVC = Count.x/total_observed,
+    Expected = Count.y/total_expected)
+
+data_long <- pivot_longer(df, cols = c(WVC, Expected), names_to = "Category", values_to = "Count")
+
+
+ggplot(data_long, aes(x = MedianType, y = Count, fill = Category)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = Count), position = position_dodge(width = 0.9), vjust = -0.5) +
+  labs(x = "Median Type", y = "Count", fill = "") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+
 
 # Analyze residuals
 

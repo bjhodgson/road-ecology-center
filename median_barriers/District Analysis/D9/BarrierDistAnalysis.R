@@ -41,3 +41,5 @@ expected_proportions <- random_barriers$total_count / total_expected
 # Perform Chi-Square Goodness of Fit Test
 chisq_test <- chisq.test(WVC_barriers$total_count, p = expected_proportions)
 print(chisq_test)
+
+# one tailed t test

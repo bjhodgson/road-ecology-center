@@ -15,7 +15,7 @@ files <- list(
   "D2 Western Gray Squirrel CROS Medians.xlsx" = "squirrel_excel",
   #"Coyote CROS Medians (2).xlsx" = "coyote_excel",
   #"Jackrabbit CROS Medians (2).xlsx" = "jackrabbit_excel",
-  "D2 Random Point Medians.xlsx" = "random_excel"
+  "D2 Random Point Medians (3).xlsx" = "random_excel"
   
 )
 
@@ -31,10 +31,27 @@ for (path in names(files)) {
 }
 
 # Filter by sheet to ensure random point distribution
-random_excel <- random_excel %>%
-  filter(Sheet == 2)
+# random_excel <- random_excel %>%
+#   filter(Sheet == 2)
 
 # PROCESS SHAPEFILES
+
+
+
+gdf <- st_read("D:\\Median Barriers\\District Spatial Data\\D2 Spatial Data\\MuleDeer\\D2_MuleDeer.shp")
+gdf <- gdf %>%
+  filter(condition %in% c("Injured", "Dead") |
+           chips_An_1 %in% c("Fatality, result of collision", "Fatality, result of dispatch", "Injury"))
+          
+group <- gdf %>%
+  group_by(latitude, longitude) %>%
+ #slice(-1)
+  #summarize(count = n())
+  filter(n() < 2) 
+
+#count(unique(group_by(gdf$latitude, gdf$longitude)))
+
+#write_sf(group, "D:\\Median Barriers\\District Spatial Data\\D2 Spatial Data\\MuleDeer\\D2_MuleDeer_NoStack.shp")
 
 # Define the shapefiles and their corresponding names
 setwd(shp_dir) # Set working directory to folder containing shapefiles
@@ -101,12 +118,19 @@ unique(merged_random_gdf$StreetImageryDate)
 merged_random_gdf <- merged_random_gdf %>%
   mutate(StreetImageryDate = parse_date_time(StreetImageryDate, orders = "my", tz = "America/Los_Angeles"))
 
+
+# Add lat/long fields to gdf
+coordinates <- st_coordinates(merged_random_gdf)
+merged_random_gdf$Latitude <- coordinates[, "Y"]
+merged_random_gdf$Longitude <- coordinates[, "X"]
+
+
 # Create df object to export to csv
 merged_random_df <- as.data.frame(merged_random_gdf) %>%
   select(-c("geometry", "Join_Count", "TARGET_FID"))
 
 # Write to csv
-#write.csv(merged_random_df, file.path(file_dir, "D2_random_sites.csv"), row.names = FALSE)
+write.csv(merged_random_df, file.path(file_dir, "D2_random_sites.csv"), row.names = FALSE)
 
 
 
