@@ -8,20 +8,18 @@ deer_comb <- right_join(
 ) %>%
   select("nid", "condition", "MedianType")
 
-unique(deer_comb$MedianType)
-
-
 deer_comb <- deer_comb %>%
   as.data.frame() %>%
   mutate(MedianType = case_when(
     str_detect(MedianType, "thrie beam") ~ "thrie beam", # If "thrie beam" is anywhere in the string, change to "thrie beam"
     str_detect(MedianType, "concrete") ~ "concrete", 
     str_detect(MedianType, "cable") ~ "cable",
-    str_detect(MedianType, "gravel") & str_detect(MedianType, "vegetative") ~ "vegetative",
+    str_detect(MedianType, "gravel") & str_detect(MedianType, "vegetative") ~ "vegetative", # If both "gravel" and "vegetative" are present, change to "vegetative"
     TRUE ~ MedianType # Keep other values as they are
   ))
 
 unique(deer_comb$MedianType)
+
 
 
 deer_sum <- deer_comb %>%

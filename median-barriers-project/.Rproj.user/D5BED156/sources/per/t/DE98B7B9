@@ -3,7 +3,7 @@
     "path": "~/GitHub/road-ecology-center/median-barriers-project/scripts/d2_analysis.R",
     "project_path": "scripts/d2_analysis.R",
     "type": "r_source",
-    "hash": "1242830277",
+    "hash": "2859164480",
     "contents": "",
     "dirty": false,
     "created": 1730322656520.0,
@@ -12,15 +12,15 @@
     "properties": {
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "177,0",
-        "scrollLine": "172"
+        "cursorPosition": "180,0",
+        "scrollLine": "173"
     },
     "folds": "",
-    "lastKnownWriteTime": 1730322637,
+    "lastKnownWriteTime": 1730333581,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1730322637,
+    "last_content_update": 1730333581111,
     "read_only": false,
     "read_only_alternatives": []
 }
