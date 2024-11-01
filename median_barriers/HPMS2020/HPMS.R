@@ -16,7 +16,7 @@ sum2020 <- hwy2020 %>%
   group_by(MEDIAN_TYPE) %>%
   count()
 
-all <- st_read("H:\\General Data\\Road Features\\HPMS_CA_2020.gdb.zip") %>%
+all <- st_read("D:\\General Data\\Road Features\\HPMS_CA_2020.gdb.zip") %>%
   as.data.frame()
 
 sumall <- all %>%
@@ -103,7 +103,7 @@ print(result)
 library(sf)
 library(dplyr)
 library(lubridate)
-roadkill <- st_read("H:\\General Data\\Roadkill\\CROS-CHIPS-20240410-ND-All\\CROS-CHIPS-20240410-ND-All.shp")
+roadkill <- st_read("D:\\General Data\\Roadkill\\CROS-CHIPS-20240410-ND-All\\CROS-CHIPS-20240410-ND-All.shp")
 
 roadkill2020 <- roadkill %>%
   mutate(observatio = ymd_hms(observatio)) %>%
@@ -111,10 +111,16 @@ roadkill2020 <- roadkill %>%
 
 
 
-highways <- st_read("D:\\Downloads\\HPMS_CA_2020_Highways.gpkg")
+highways <- st_read("D:\\HPMS_CA_2020_Highways.gpkg")
 
 # plot(highways$geom)
 # plot(roadkill2020$geometry)
+
+length(unique(highways$ROUTE_NAME))
+length(unique(highways$ROUTE_NUMBER))
+length(unique(highways$Route_ID))
+
+unique(highways$NHS)
 
 
 # Transform both layers to EPSG 3310 (California Albers)
@@ -290,7 +296,43 @@ summary(poisson_model)
 # logistic regression more appropriate, need random points back
 
 # Generate random points
-random <- st_read("D:\\Downloads\\CA_Random_Highways.gpkg")
+random <- st_read("D:\\CA_Random_Highways.gpkg")
+head(random)
+
+#st_crs(random, 3310)
+
 # Clip roadkill points to the 50-meter buffer
 clipped_random <- st_join(random, highways, join = st_intersects)
+
+
+head(clipped_random)
+
+
+highways <- st_transform(highways, 3310) %>% st_zm()
+st_crs(highways)
+
+# Set the seed for reproducibility
+set.seed(123)  # Replace 123 with any number you choose
+
+# Dissolve the lines
+dissolved_line <- highways %>% 
+  st_union() %>%          # Union all geometries
+  st_sf()                 # Convert back to an sf object
+
+# Convert to LINESTRING if it's a MULTILINESTRING
+dissolved_line <- st_cast(dissolved_line, "LINESTRING")
+
+# Specify the number of random points you want
+n_points <- 100
+
+# Generate random points along the dissolved line
+random_points <- st_line_sample(dissolved_line, sample = runif(n_points, 0, 1))
+
+# Convert the sample points to an sf object
+random_points_sf <- st_sf(geometry = random_points)
+
+# Plot the results
+plot(st_geometry(dissolved_line), col = 'blue', main = "Random Points Along Dissolved Line")
+plot(random_points_sf, col = 'red', add = TRUE)
+
 
