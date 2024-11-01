@@ -109,9 +109,6 @@ roadkill2020 <- roadkill %>%
   mutate(observatio = ymd_hms(observatio)) %>%
   filter(year(observatio) == 2020)
 
-deer <- roadkill2020 %>%
-  filter(animal == "Mule (or Black tailed) Deer")
-
 
 
 highways <- st_read("D:\\Downloads\\HPMS_CA_2020_Highways.gpkg")
@@ -222,55 +219,78 @@ hist(highways$MEDIAN_TYPE,
 par(mfrow = c(1, 1))
 
 
-library(ggplot2)
-library(gridExtra)
-
-# Create individual plots
-plot1 <- ggplot(clipped_roadkill, aes(x = MEDIAN_TYPE)) +
-  geom_histogram(fill = "lightblue", color = "black", bins = 30) +
-  labs(title = "Clipped Roadkill MEDIAN_TYPE", x = "MEDIAN_TYPE", y = "Count")
-
-plot2 <- ggplot(highways, aes(x = MEDIAN_TYPE)) +
-  geom_histogram(fill = "lightgreen", color = "black", bins = 30) +
-  labs(title = "Highways MEDIAN_TYPE", x = "MEDIAN_TYPE", y = "Count")
-
-# Arrange plots side by side
-grid.arrange(plot1, plot2, ncol = 2)
 
 
+# Create the contingency table
+contingency_table <- combined_sum %>%
+  select(MEDIAN_TYPE, n, dataset) %>%  # Select relevant columns
+  pivot_wider(names_from = dataset, values_from = n, values_fill = 0)  # Reshape data
+
+# Display the contingency table
+print(contingency_table)
+
+# Remove MT 4 (catchall / misc)
+contingency_table <- contingency_table %>%
+  filter(!MEDIAN_TYPE == 4)
+
+# Create observed counts for Roadkill
+observed_counts <- contingency_table$Roadkill  # Counts from Roadkill
+
+# Create expected counts based on Highways
+expected_counts <- contingency_table$Highways / sum(contingency_table$Highways) * sum(observed_counts)
+
+# Combine observed and expected counts
+data_for_test <- rbind(observed_counts, expected_counts)
+
+# Perform the Chi-square test
+chi_square_result <- chisq.test(data_for_test)
+
+# Display the result
+print(chi_square_result)
 
 
-# Set up a multi-panel plotting area
-par(mfrow = c(1, 2))  # 1 row, 2 columns
+deer <- clipped_roadkill %>%
+  filter(animal == "Mule (or Black tailed) Deer")
 
-# Calculate percentages for clipped_roadkill
-hist(clipped_roadkill$MEDIAN_TYPE, 
-     main = "Clipped Roadkill MEDIAN_TYPE", 
-     xlab = "MEDIAN_TYPE", 
-     col = "lightblue", 
-     border = "black", 
-     freq = FALSE)  # Set freq = FALSE to plot density
-# Add percentage scale
-rug(clipped_roadkill$MEDIAN_TYPE)
-y_vals <- seq(0, max(density(clipped_roadkill$MEDIAN_TYPE)$y), length.out = 100)
-lines(density(clipped_roadkill$MEDIAN_TYPE), col = "blue", lwd = 2)
-y_pct <- y_vals * 100 / sum(hist(clipped_roadkill$MEDIAN_TYPE, plot = FALSE)$counts)
-lines(density(clipped_roadkill$MEDIAN_TYPE) * diff(hist(clipped_roadkill$MEDIAN_TYPE, plot = FALSE)$breaks)[1] * 100, col = "blue")
+deer1 <- deer %>%
+  filter(condition %in% c("Dead", "Injured"))
 
-# Calculate percentages for highways
-hist(highways$MEDIAN_TYPE, 
-     main = "Highways MEDIAN_TYPE", 
-     xlab = "MEDIAN_TYPE", 
-     col = "lightgreen", 
-     border = "black", 
-     freq = FALSE)  # Set freq = FALSE to plot density
-# Add percentage scale
-rug(highways$MEDIAN_TYPE)
-y_vals <- seq(0, max(density(highways$MEDIAN_TYPE)$y), length.out = 100)
-lines(density(highways$MEDIAN_TYPE), col = "green", lwd = 2)
-y_pct <- y_vals * 100 / sum(hist(highways$MEDIAN_TYPE, plot = FALSE)$counts)
-lines(density(highways$MEDIAN_TYPE) * diff(hist(highways$MEDIAN_TYPE, plot = FALSE)$breaks)[1] * 100, col = "green")
+predictor_vars <- c("MEDIAN_TYPE", "AADT", "MEDIAN_WIDTH")
 
-# Reset to default single-panel plotting
-par(mfrow = c(1, 1))
+unique(deer$AADT)
+
+
+deer <- deer %>%
+  mutate(AADT_bin = cut(AADT, breaks = seq(0, max(AADT), by = 50000), include.lowest = TRUE))
+
+deer <- deer %>%
+  as.data.frame() %>%
+  select(!geometry) %>%
+  mutate(MEDIAN_TYPE = as.factor(MEDIAN_TYPE)) %>%
+  filter(!MEDIAN_TYPE %in% c("3", "4", "5"))
+
+
+deer$roadkill_count <- 1
+
+glm_df <- deer %>%
+  as.data.frame() %>%
+  #select(!geometry) %>%
+  group_by(MEDIAN_TYPE, AADT_bin) %>%
+  summarize(roadkill_count = n())
+
+# Fit a Poisson regression model
+poisson_model <- glm(roadkill_count ~ MEDIAN_TYPE + AADT_bin, family = poisson(link = "log"), data = glm_df)
+summary(poisson_model)
+
+
+
+
+
+
+# logistic regression more appropriate, need random points back
+
+# Generate random points
+random <- st_read("D:\\Downloads\\CA_Random_Highways.gpkg")
+# Clip roadkill points to the 50-meter buffer
+clipped_random <- st_join(random, highways, join = st_intersects)
 
