@@ -1,14 +1,18 @@
 source("scripts/d2_data_prep.R")
 
-# DEER
+# ----------------------------------------
+# Prepare & Analyze Deer Data
+# ----------------------------------------
 
-deer_comb <- right_join(
+# Join roadkill data to median attribute data
+deer_merge <- right_join(
   deer_gdf, deer_df,
-  by = "nid"
+  by = "nid" # Join key
 ) %>%
-  select("nid", "condition", "MedianType")
+  select("nid", "condition", "MedianType") # Select relevant columns
 
-deer_comb <- deer_comb %>%
+# Recategorize median types to dominant median type
+deer_merge <- deer_merge %>%
   as.data.frame() %>%
   mutate(MedianType = case_when(
     str_detect(MedianType, "thrie beam") ~ "thrie beam", # If "thrie beam" is anywhere in the string, change to "thrie beam"
@@ -18,11 +22,11 @@ deer_comb <- deer_comb %>%
     TRUE ~ MedianType # Keep other values as they are
   ))
 
-unique(deer_comb$MedianType)
+unique(deer_merge$MedianType)
 
 
-
-deer_sum <- deer_comb %>%
+# Sum roadkill observations by median type
+deer_sum <- deer_merge %>%
   #filter(!MedianType == "cable") %>%
   group_by(MedianType) %>%
   count() %>%
@@ -31,19 +35,20 @@ deer_sum <- deer_comb %>%
 unique(deer_sum$MedianType)
 
 
-
+# Rename unique id for merge
 random_gdf$cid <- random_gdf$CID
 
-random_comb <- right_join(
+# Join random data to median attribute data
+random_merge <- right_join(
   random_gdf, random_df,
   by = "cid"
 ) %>%
   select("cid", "MedianType")
 
-unique(random_comb$MedianType)
+unique(random_merge$MedianType)
 
-
-random_comb <- random_comb %>%
+# Recategorize median types to dominant median type
+random_merge <- random_merge %>%
   as.data.frame() %>%
   mutate(MedianType = case_when(
     str_detect(MedianType, "thrie beam") ~ "thrie beam", # If "thrie beam" is anywhere in the string, change to "thrie beam"
@@ -53,10 +58,10 @@ random_comb <- random_comb %>%
     TRUE ~ MedianType # Keep other values as they are
   ))
 
-unique(random_comb$MedianType)
+unique(random_merge$MedianType)
 
-
-random_sum <- random_comb %>%
+# Sum random observations by median type
+random_sum <- random_merge %>%
   #filter(!MedianType == "cable") %>%
   group_by(MedianType) %>%
   count() %>%
@@ -64,61 +69,63 @@ random_sum <- random_comb %>%
 
 unique(random_sum$MedianType)
 
-tab1 <- left_join(deer_sum, random_sum, by = "MedianType")
+# Join roadkill and random counts by MedianType
+deer_comparison <- left_join(deer_sum, random_sum, by = "MedianType")
+
+# Calculate frequencies
+deer_comparison$observed.pct <- deer_comparison$observed/sum(deer_comparison$observed)
+deer_comparison$expected.pct <- deer_comparison$expected/sum(deer_comparison$expected)
+
+# Reshape data from wide to long format
+deer_comparison_long <- deer_comparison %>%
+  pivot_longer(cols = c("observed.pct", "expected.pct"), 
+               names_to = "Type", 
+               values_to = "Percentage")
+
+# Create bar chart
+ggplot(deer_comparison_long, aes(x = MedianType, y = Percentage, fill = Type)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  theme_minimal() +
+  labs(title = "Observed vs Expected Percentages by Median Type", x = "Median Type", y = "Percentage") +
+  scale_fill_manual(values = c("skyblue", "orange"))
+
   
 # Create contingency table with only the counts
-contingency_table <- as.matrix(tab1[, c("observed", "expected")])
+contingency_table <- as.matrix(deer_comparison[, c("observed", "expected")])
 # Perform Chi-square test
 chi_test <- chisq.test(contingency_table)
 # View the results
 chi_test
-chi_test$expected  # View expected counts if needed
+chi_test$expected
 
-# tab1 <- tab1 %>%
+# deer_comparison <- deer_comparison %>%
 #   filter(!MedianType == "cable")
 
 # Observed frequencies for the deer counts
-observed_counts <- tab1$observed 
+observed_counts <- deer_comparison$observed 
 # Expected frequencies using the random counts
-expected_counts <- tab1$expected 
+expected_counts <- deer_comparison$expected 
 # Perform the Chi-square goodness-of-fit test
 goodness_of_fit_test <- chisq.test(observed_counts, p = expected_counts / sum(expected_counts), simulate.p.value = FALSE)
 # View the results
 goodness_of_fit_test
 
-# Calculate expected frequencies
-expected_frequencies <- tab1$expected
-# Calculate Pearson's residuals
-observed_frequencies <- contingency_table
-residuals <- (observed_frequencies - expected_frequencies) / sqrt(expected_frequencies)
-# Print residuals
-print("Pearson's Residuals:")
-print(residuals)
-# Identify significant categories
-significant_categories <- abs(residuals) > 2
-print("Significant Categories (True indicates significant):")
-print(significant_categories)
 
-fisher.test(contingency_table, simulate.p.value = TRUE)
+# ----------------------------------------
+# Prepare & Analyze Squirrel Data
+# ----------------------------------------
 
-colnames(contingency_table) <- c("Observed", "Expected")
-rownames(contingency_table) <- c("Category 1", "Category 2", "Category 3", "Category 4", "Category 5", "Category 6")
-summary(assoc(contingency_table))
-mosaic(contingency_table, shade = TRUE, legend = TRUE)
-
-
-# SQUIRRELS
-
-squirrel_comb <- right_join(
+# Join roadkill data to median attribute data
+squirrel_merge <- right_join(
   squirrel_gdf, squirrel_df,
   by = "nid"
 ) %>%
   select("nid", "condition", "MedianType")
 
-unique(squirrel_comb$MedianType)
+unique(squirrel_merge$MedianType)
 
-
-squirrel_comb <- squirrel_comb %>%
+# Recategorize median types to dominant median type
+squirrel_merge <- squirrel_merge %>%
   as.data.frame() %>%
   mutate(MedianType = case_when(
     str_detect(MedianType, "thrie beam") ~ "thrie beam", # If "thrie beam" is anywhere in the string, change to "thrie beam"
@@ -128,10 +135,10 @@ squirrel_comb <- squirrel_comb %>%
     TRUE ~ MedianType # Keep other values as they are
   ))
 
-unique(squirrel_comb$MedianType)
+unique(squirrel_merge$MedianType)
 
-
-squirrel_sum <- squirrel_comb %>%
+# Sum roadkill observations by median type
+squirrel_sum <- squirrel_merge %>%
   #filter(!MedianType == "cable") %>%
   group_by(MedianType) %>%
   count() %>%
@@ -139,44 +146,27 @@ squirrel_sum <- squirrel_comb %>%
 
 unique(squirrel_sum$MedianType)
 
-tab2 <- left_join(squirrel_sum, random_sum, by = "MedianType")
+# Join roadkill and random counts by MedianType
+squirrel_comparison <- left_join(squirrel_sum, random_sum, by = "MedianType")
 
 # Create contingency table with only the counts
-contingency_table <- as.matrix(tab2[, c("observed", "expected")])
+contingency_table <- as.matrix(squirrel_comparison[, c("observed", "expected")])
 # Perform Chi-square test
 chi_test <- chisq.test(contingency_table)
 # View the results
 chi_test
-chi_test$expected  # View expected counts if needed
+chi_test$expected 
 
-# tab1 <- tab1 %>%
+# squirrel_comparison <- squirrel_comparison %>%
 #   filter(!MedianType == "cable")
 
 # Observed frequencies for the deer counts
-observed_counts <- tab2$observed 
+observed_counts <- squirrel_comparison$observed 
 # Expected frequencies using the random counts
-expected_counts <- tab2$expected 
+expected_counts <- squirrel_comparison$expected 
 # Perform the Chi-square goodness-of-fit test
 goodness_of_fit_test <- chisq.test(observed_counts, p = expected_counts / sum(expected_counts), simulate.p.value = FALSE)
-# View the results# View the resultsFALSE
+# View the results# View the results FALSE
 goodness_of_fit_test
 
-# Calculate expected frequencies
-expected_frequencies <- tab1$expected
-# Calculate Pearson's residuals
-observed_frequencies <- contingency_table
-residuals <- (observed_frequencies - expected_frequencies) / sqrt(expected_frequencies)
-# Print residuals
-print("Pearson's Residuals:")
-print(residuals)
-# Identify significant categories
-significant_categories <- abs(residuals) > 2
-print("Significant Categories (True indicates significant):")
-print(significant_categories)
 
-fisher.test(contingency_table, simulate.p.value = TRUE)
-
-colnames(contingency_table) <- c("Observed", "Expected")
-rownames(contingency_table) <- c("Category 1", "Category 2", "Category 3")
-summary(assoc(contingency_table))
-mosaic(contingency_table, shade = TRUE, legend = TRUE)

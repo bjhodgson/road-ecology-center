@@ -9,6 +9,7 @@ library(sf)
 library(lubridate)
 library(stringr)
 library(vcd)
+library(tidyr)
 
 # Load necessary functions
 source("utils/process_and_name_xlsx.R")
