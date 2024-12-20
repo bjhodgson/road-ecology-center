@@ -2,7 +2,7 @@ library(readxl)
 library(dplyr)
 
 # Define the data directory
-data_dir <- "D:/Median Barriers/Statewide Highways/Data Outputs"
+data_dir <- "H:/Median Barriers/Statewide Highways/Data Outputs"
 
 # List all .xlsx files in the directory and subdirectories
 xlsx_files <- list.files(data_dir, pattern = "\\.xlsx$", full.names = TRUE, recursive = TRUE)

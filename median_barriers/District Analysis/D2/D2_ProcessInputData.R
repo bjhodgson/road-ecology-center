@@ -3,20 +3,21 @@ library(sf)
 library(dplyr)
 
 # Set paths to data directories
-file_dir <- "C:\\Users\\HP\\Downloads" # Set pathway to folder containing input Excel data
-shp_dir <- "D:\\Median Barriers\\District Spatial Data\\D2 Spatial Data" # Set pathway to folder containing input shapefile data
-script_dir <- "C:\\Users\\HP\\Documents\\GitHub\\road-ecology-center\\median_barriers\\District Analysis" # Set path to folder containing RScripts
+file_dir <- "D:\\Downloads" # Set pathway to folder containing input Excel data
+shp_dir <- "H:\\Median Barriers\\District Spatial Data\\D2 Spatial Data" # Set pathway to folder containing input shapefile data
+script_dir <- "D:\\Documents\\road-ecology-center\\median_barriers\\District Analysis" # Set path to folder containing RScripts
 
 # PROCESS EXCEL FILES
 
 # Define list of Excel file names and corresponding output names
 setwd(file_dir) # Set working directory to folder containing Excel files
 files <- list(
-  "D2 Western Gray Squirrel CROS Medians.xlsx" = "squirrel_excel",
+  "D2 Western Gray Squirrel Medians.xlsx" = "squirrel_excel"
   #"Coyote CROS Medians (2).xlsx" = "coyote_excel",
   #"Jackrabbit CROS Medians (2).xlsx" = "jackrabbit_excel",
-  "D2 Random Point Medians (3).xlsx" = "random_excel"
-  
+  # "D2 Mule Deer NoStack Medians.xlsx" = "deer_excel",
+  # "D2 Random Point Medians (1).xlsx" = "random_excel"
+  # 
 )
 
 # Set path to function to process Excel files from Rscript file
@@ -38,16 +39,16 @@ for (path in names(files)) {
 
 
 
-gdf <- st_read("D:\\Median Barriers\\District Spatial Data\\D2 Spatial Data\\MuleDeer\\D2_MuleDeer.shp")
-gdf <- gdf %>%
-  filter(condition %in% c("Injured", "Dead") |
-           chips_An_1 %in% c("Fatality, result of collision", "Fatality, result of dispatch", "Injury"))
-          
-group <- gdf %>%
-  group_by(latitude, longitude) %>%
- #slice(-1)
-  #summarize(count = n())
-  filter(n() < 2) 
+#gdf <- st_read("D:\\Median Barriers\\District Spatial Data\\D2 Spatial Data\\MuleDeer\\D2_MuleDeer.shp")
+# gdf <- gdf %>%
+#   filter(condition %in% c("Injured", "Dead") |
+#            chips_An_1 %in% c("Fatality, result of collision", "Fatality, result of dispatch", "Injury"))
+#           
+# group <- gdf %>%
+#   group_by(latitude, longitude) %>%
+#  #slice(-1)
+#   #summarize(count = n())
+#   filter(n() < 2) 
 
 #count(unique(group_by(gdf$latitude, gdf$longitude)))
 
@@ -59,8 +60,9 @@ shapefiles <- list(
   #"Mule Deer\\D9_deer_hwys.shp" = "deer_gdf",
   #"Coyote\\D9_coyote_1_145.shp" = "coyote_gdf",
   #"Jackrabbit\\D9_jackrabbit_1_138.shp" = "jackrabbit_gdf",
-  "RandomPoints\\D2_Random_AADT.shp" = "random_gdf",
-  "WesternGraySquirrel\\D2_WesternGraySquirrel_AADT.shp" = "squirrel_gdf"
+  "RandomPoints\\D2_Random_HPMS.shp" = "random_gdf",
+  "WesternGraySquirrel\\D2_WesternGraySquirrel_HPMS.shp" = "squirrel_gdf"
+  #"MuleDeer\\D2_MuleDeer_NoStack_HPMS.shp" = "deer_gdf"
 )
 
 # Loop through the shapefiles and process each one
@@ -102,6 +104,33 @@ merged_gdf$observatio <- as.POSIXct(merged_gdf$observatio, format = "%Y/%m/%d %H
 merged_gdf <- merged_gdf %>%
   filter(observatio >= as.POSIXct("2015-01-01 00:00:00"))
 
+
+standardize_dates <- function(date_strings) {
+  standardized_dates <- sapply(date_strings, function(date) {
+    # Split the date string by "/"
+    parts <- strsplit(date, "/")[[1]]
+    
+    # Check and modify the month part
+    if (nchar(parts[1]) == 1) {
+      parts[1] <- paste0("0", parts[1])  # Add "0" in front of single-digit month
+    }
+    
+    # Check and modify the year part
+    if (nchar(parts[2]) == 2) {
+      parts[2] <- paste0("20", parts[2])  # Add "20" in front of two-digit year
+    }
+    
+    # Return the modified date string in "mm/yyyy" format
+    return(paste(parts, collapse = "/"))
+  })
+  
+  return(standardized_dates)
+}
+
+merged_gdf$StreetImageryDate <- standardize_dates(merged_gdf$StreetImageryDate) # Convert data type to date
+unique(merged_gdf$StreetImageryDate)
+
+
 # Filter by WVC observations
 WVC_gdf <- merged_gdf %>%
   filter(condition %in% c("Injured", "Dead") |
@@ -115,8 +144,11 @@ unique(merged_random_gdf$StreetImageryDate)
 
 
 # Convert mm/yy and mm/yyyy formats to a consistent Date format (year-month-day defaulting to 1st day)
-merged_random_gdf <- merged_random_gdf %>%
-  mutate(StreetImageryDate = parse_date_time(StreetImageryDate, orders = "my", tz = "America/Los_Angeles"))
+# merged_random_gdf <- merged_random_gdf %>%
+#   mutate(StreetImageryDate = parse_date_time(StreetImageryDate, orders = "my", tz = "America/Los_Angeles"))
+
+merged_random_gdf$StreetImageryDate <- standardize_dates(merged_random_gdf$StreetImageryDate) # Convert data type to date
+unique(merged_random_gdf$StreetImageryDate)
 
 
 # Add lat/long fields to gdf
@@ -135,22 +167,22 @@ write.csv(merged_random_df, file.path(file_dir, "D2_random_sites.csv"), row.name
 
 
 # Filter WVCs by invalid conditions
-WVC_gdf <- WVC_gdf %>%
-  filter(rowSums(across(everything(), ~ grepl("overpass", ., ignore.case = TRUE))) == 0) %>% # Remove overpasses
-  filter(!grepl("bridge", MedianNotes, ignore.case = TRUE)) # Remove bridges
+# WVC_gdf <- WVC_gdf %>%
+#   filter(rowSums(across(everything(), ~ grepl("overpass", ., ignore.case = TRUE))) == 0) %>% # Remove overpasses
+#   filter(!grepl("bridge", MedianNotes, ignore.case = TRUE)) # Remove bridges
 
 unique(WVC_gdf$StreetImageryDate)
 
 # Convert m/yyyy and mm/yyyy formats to a consistent Date format (year-month-day defaulting to 1st day)
-WVC_gdf <- WVC_gdf %>%
-  mutate(StreetImageryDate = parse_date_time(StreetImageryDate, orders = "my", tz = "America/Los_Angeles"))
+# WVC_gdf <- WVC_gdf %>%
+#   mutate(StreetImageryDate = parse_date_time(StreetImageryDate, orders = "my", tz = "America/Los_Angeles"))
 
 # Create df object to export to csv
 WVC_df <- as.data.frame(WVC_gdf) %>%
   select(-c("geometry", "Join_Count", "TARGET_FID"))
 
 # Write to csv
-#write.csv(WVC_df, file.path(file_dir, "D2_squirrel_hits.csv"), row.names = FALSE)
+write.csv(WVC_df, file.path(file_dir, "D2_squirrel_hits.csv"), row.names = FALSE)
 
 #_____ intersection test
 
